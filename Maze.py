@@ -2,27 +2,23 @@ import random
 
 
 class Maze:
-    size = 12
-    player = []
-    elevation = []
-    doors = []
-    keys = []
-    isDoors = False
     doorArr = [False, False, False]
 
-    def __init__(self, size, isDoors):
-        print("starting constructor")
+    def __init__(self, size=12, hasDoors=False):
+        self.keys = None
+        self.doors = None
+        self.elevation = None
+        self.player = None
         self.size = size
-        self.isDoors = isDoors
+        self.hasDoors = hasDoors
         self.initPlayer()
         self.initElevation()
-        if isDoors:
+        if hasDoors:
             self.initDoors()
             self.initKeys()
 
     def initPlayer(self):
-        print("initing player")
-        self.player = [[0 for x in range(self.size)] for y in range(self.size)]
+        self.player = [[0 for _ in range(self.size)] for _ in range(self.size)]
         self.player[random.randint(0, self.size - 1)][random.randint(0, self.size - 1)] = 1
 
         while True:
@@ -31,15 +27,14 @@ class Maze:
             if self.player[x][y] != 1:
                 self.player[x][y] = 2
                 break
-        print("finished initing player")
 
     def initElevation(self):
-        self.elevation = [[random.randint(1, 6) for x in range(self.size)] for y in range(self.size)]
+        self.elevation = [[random.randint(1, 6) for _ in range(self.size)] for _ in range(self.size)]
 
     def initDoors(self):
-        self.doors = [[0 for x in range(self.size)] for y in range(self.size)]
+        self.doors = [[0 for _ in range(self.size)] for _ in range(self.size)]
 
-        doorNumber = random.randint(0, 3)
+        doorNumber = random.randint(1, 3)
         if doorNumber != 0:
             for i in range(doorNumber):
                 self.doorArr[i] = True
@@ -54,7 +49,7 @@ class Maze:
                         break
 
     def initKeys(self):
-        self.keys = [[0 for x in range(self.size)] for y in range(self.size)]
+        self.keys = [[0 for _ in range(self.size)] for _ in range(self.size)]
 
         for i in range(len(self.doorArr)):
             if self.doorArr[i]:
@@ -70,7 +65,7 @@ class Maze:
         print('\n'.join(' '.join(str(x) for x in row) for row in self.player))
         print("\nELEVATION")
         print('\n'.join(' '.join(str(x) for x in row) for row in self.elevation))
-        if self.isDoors:
+        if self.hasDoors:
             # print(self.doorArr)
             print("\nDOORS")
             print('\n'.join(' '.join(str(x) for x in row) for row in self.doors))
