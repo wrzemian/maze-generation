@@ -9,6 +9,8 @@ class Maze:
         self.doors = None
         self.elevation = None
         self.player = None
+        self.startingPoint = None
+        self.endingPoint = None
         self.size = size
         self.hasDoors = hasDoors
         self.initPlayer()
@@ -19,14 +21,21 @@ class Maze:
 
     def initPlayer(self):
         self.player = [[0 for _ in range(self.size)] for _ in range(self.size)]
-        self.player[random.randint(0, self.size - 1)][random.randint(0, self.size - 1)] = 1
+        self.startingPoint = []
+        self.startingPoint.append(random.randint(0, self.size - 1))
+        self.startingPoint.append(random.randint(0, self.size - 1))
+        self.player[self.startingPoint[0]][self.startingPoint[1]] = 1
 
+        self.endingPoint = []
+        self.endingPoint.append(random.randint(0, self.size - 1))
+        self.endingPoint.append(random.randint(0, self.size - 1))
         while True:
-            x = random.randint(0, self.size - 1)
-            y = random.randint(0, self.size - 1)
-            if self.player[x][y] != 1:
-                self.player[x][y] = 2
+            if self.player[self.endingPoint[0]][self.endingPoint[1]] != 1:
+                self.player[self.endingPoint[0]][self.endingPoint[1]] = 2
                 break
+            else:
+                self.endingPoint[0] = random.randint(0, self.size - 1)
+                self.endingPoint[1] = random.randint(0, self.size - 1)
 
     def initElevation(self):
         self.elevation = [[random.randint(1, 6) for _ in range(self.size)] for _ in range(self.size)]
