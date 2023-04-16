@@ -10,7 +10,13 @@ if __name__ == '__main__':
     path = astar(maze, maze.startingPoint, maze.endingPoint)
     print("\n\nPATH")
     print(path)
-    print("\n\nMOVES REQUIRED")
-    print(len(path) - 1)
+    if path is not None:
+        print("\nPATH VALUES")
+        temp = []
+        for pos in path:
+            temp.append(maze.elevation[pos[0]][pos[1]])
+        print(temp)
+        print("\nMOVES REQUIRED")
+        print(len(path) - 1)
 
 
