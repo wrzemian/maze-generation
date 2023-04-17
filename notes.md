@@ -1,5 +1,4 @@
 ## TODO
-- save door positions same way as starting and ending point
 - new Astar method:
 - if doors check player -> finish
 - if None check player -> 1st available door key

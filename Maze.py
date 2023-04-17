@@ -13,9 +13,13 @@ class Maze:
         self.endingPoint = None
         self.size = size
         self.hasDoors = hasDoors
+
         self.initPlayer()
         self.initElevation()
         if hasDoors:
+            self.redKey = []
+            self.greenKey = []
+            self.blueKey = []
             self.initDoors()
             self.initKeys()
 
@@ -67,6 +71,15 @@ class Maze:
                     y = random.randint(0, self.size - 1)
                     if self.keys[x][y] == 0 and self.player[x][y] == 0 and self.doors[x][y] == 0:
                         self.keys[x][y] = i+1
+                        if i == 0:
+                            self.redKey.append(x)
+                            self.redKey.append(y)
+                        if i == 1:
+                            self.greenKey.append(x)
+                            self.greenKey.append(y)
+                        if i == 2:
+                            self.blueKey.append(x)
+                            self.blueKey.append(y)
                         break
 
     def toString(self):
@@ -75,8 +88,15 @@ class Maze:
         print("\nELEVATION")
         print('\n'.join(' '.join(str(x) for x in row) for row in self.elevation))
         if self.hasDoors:
-            # print(self.doorArr)
+            print("\nDOOR TYPES\n")
+            print(self.doorArr)
             print("\nDOORS")
             print('\n'.join(' '.join(str(x) for x in row) for row in self.doors))
             print("\nKEYS")
             print('\n'.join(' '.join(str(x) for x in row) for row in self.keys))
+            print("\nRED KEY")
+            print(self.redKey)
+            print("\nGREEN KEY")
+            print(self.greenKey)
+            print("\nBLUE KEY")
+            print(self.blueKey)
