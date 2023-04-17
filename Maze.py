@@ -37,9 +37,7 @@ class Maze:
                     outcome.append(j)
                     return outcome
 
-    def override(self, player, elevation, doors, keys, hasDoors=False, doorArr=None):
-        if doorArr is None:
-            doorArr = [False, False, False]
+    def override(self, player, elevation, doors, keys, hasDoors=False, doorArr=[False, False, False]):
         self.size = len(player[0])
         self.hasDoors = hasDoors
         self.player = player
@@ -52,13 +50,27 @@ class Maze:
 
         if hasDoors:
             if self.doorArr[0]:
+                self.doorNumber = 1
                 self.redKey = self.findInArray(self.keys, 1)
                 self.redKeyActivated = False
+            else:
+                self.redKey = []
+                self.redKeyActivated = False
+
             if self.doorArr[1]:
+                self.doorNumber = 2
                 self.greenKey = self.findInArray(self.keys, 2)
                 self.greenKeyActivated = False
+            else:
+                self.greenKey = []
+                self.greenKeyActivated = False
+
             if self.doorArr[2]:
+                self.doorNumber = 3
                 self.blueKey = self.findInArray(self.keys, 3)
+                self.blueKeyActivated = False
+            else:
+                self.blueKey = []
                 self.blueKeyActivated = False
 
 
@@ -132,8 +144,10 @@ class Maze:
         print('\n'.join(' '.join(str(x) for x in row) for row in self.elevation))
         if self.hasDoors:
             if rich:
-                print("\nDOOR TYPES\n")
+                print("\nDOOR TYPES")
                 print(self.doorArr)
+                print("\nDOOR NUMBER")
+                print(self.doorNumber)
             print("\nDOORS")
             print('\n'.join(' '.join(str(x) for x in row) for row in self.doors))
             print("\nKEYS")

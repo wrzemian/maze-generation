@@ -14,18 +14,20 @@ class Solver:
                 self.steps = len(path) - 1
                 print("success")
             else:
-                print("doors unreachable without key")
+                print("exit unreachable without key")
                 if maze.doorNumber == 1:
                     path = astar(maze, maze.startingPoint, maze.redKey)
                     if path is not None:
+                        print("reached key, going for exit")
                         maze.redKeyActivated = True
                         self.steps = len(path) - 1
                         path = astar(maze, maze.redKey, maze.endingPoint)
                         if path is not None:
+                            print("exit reached")
                             self.steps += len(path) - 1
                         else:
                             self.steps = 0
-                            print("key reached, no path to doors")
+                            print("key reached, no path to exit")
                     else:
                         self.steps = 0
                         print("failed to reach key")
