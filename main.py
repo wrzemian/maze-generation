@@ -28,7 +28,7 @@ if __name__ == '__main__':
                   [0, 1, 0, 0]]
 
     maze.override(player, elevation, doors, keys, True, [True, False, False])
-    maze.toString(True)
+    maze.toString()
 
     # path = astar(maze, maze.startingPoint, maze.endingPoint)
     Solver.solveMaze(solver, maze)

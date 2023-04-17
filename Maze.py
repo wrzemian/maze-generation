@@ -73,8 +73,6 @@ class Maze:
                 self.blueKey = []
                 self.blueKeyActivated = False
 
-
-
     def initPlayer(self):
         self.player = [[0 for _ in range(self.size)] for _ in range(self.size)]
         self.startingPoint = []
@@ -137,7 +135,7 @@ class Maze:
                             self.blueKeyActivated = False
                         break
 
-    def toString(self, rich):
+    def toString(self, rich=False):
         print("PLAYER")
         print('\n'.join(' '.join(str(x) for x in row) for row in self.player))
         print("\nELEVATION")
