@@ -12,10 +12,11 @@ class Solver:
             path = astar(maze, maze.startingPoint, maze.endingPoint)
             if path is not None:
                 self.steps = len(path) - 1
-                print("success")
+                print("exit reached without key interactions")
             else:
                 print("exit unreachable without key")
                 if maze.doorNumber == 1:
+                    print("one key mode")
                     path = astar(maze, maze.startingPoint, maze.redKey)
                     if path is not None:
                         print("reached key, going for exit")
@@ -31,6 +32,9 @@ class Solver:
                     else:
                         self.steps = 0
                         print("failed to reach key")
+                if maze.doorNumber == 2:
+                    print("two key mode")
+                    keyorder = [maze.redKey, maze.greenKey]
 
         else:
             path = astar(maze, maze.startingPoint, maze.endingPoint)

@@ -10,24 +10,27 @@ if __name__ == '__main__':
     # while i < 2:
     maze = Maze(4, True)
 
-    player = [[2,0,0,0],
-                   [0,0,0,0],
-                   [0,0,0,0],
-                   [1,0,0,0]]
-    elevation = [[2, 2, 2, 2],
+    player =      [[2, 0, 0, 0],
+                   [0, 0, 0, 0],
+                   [0, 0, 0, 0],
+                   [0, 1, 0, 0]]
+
+    elevation =   [[2, 2, 2, 2],
                    [2, 2, 2, 2],
                    [2, 2, 2, 2],
                    [2, 2, 2, 2]]
-    doors = [[0, 0, 0, 0],
-                   [1, 1, 1, 0],
-                   [0, 0, 1, 0],
-                   [0, 0, 1, 0]]
-    keys = [[0, 0, 0, 0],
-                  [0, 0, 0, 0],
-                  [0, 0, 0, 0],
-                  [0, 1, 0, 0]]
 
-    maze.override(player, elevation, doors, keys, True, [True, False, False])
+    doors =       [[0, 0, 0, 0],
+                   [2, 2, 2, 2],
+                   [1, 1, 1, 0],
+                   [0, 0, 1, 0]]
+
+    keys =       [[0, 0, 0, 0],
+                  [0, 0, 0, 0],
+                  [0, 0, 0, 2],
+                  [1, 0, 0, 0]]
+
+    maze.override(player, elevation, doors, keys, True, [True, True, False])
     maze.toString()
 
     # path = astar(maze, maze.startingPoint, maze.endingPoint)

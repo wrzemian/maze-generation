@@ -33,6 +33,10 @@ def astar(maze, start, end):
                 continue
             if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 1 and not maze.redKeyActivated:
                 continue
+            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 2 and not maze.greenKeyActivated:
+                continue
+            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 3 and not maze.blueKeyActivated:
+                continue
             new_node = Node(node, neighbor_pos)
             neighbors.append(new_node)
         return neighbors
