@@ -31,11 +31,11 @@ def astar(maze, start, end):
                 continue
             if abs(maze.elevation[node.position[0]][node.position[1]] - maze.elevation[neighbor_pos[0]][neighbor_pos[1]]) > 2:
                 continue
-            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 1 and not maze.redKeyActivated:
+            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 1 and not maze.doorsStatus[0]:
                 continue
-            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 2 and not maze.greenKeyActivated:
+            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 2 and not maze.doorsStatus[1]:
                 continue
-            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 3 and not maze.blueKeyActivated:
+            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 3 and not maze.doorsStatus[2]:
                 continue
             new_node = Node(node, neighbor_pos)
             neighbors.append(new_node)

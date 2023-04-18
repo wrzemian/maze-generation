@@ -1,53 +1,75 @@
 from Astar import astar
+import itertools
 
 
 class Solver:
     def __init__(self):
         self.totalSteps = []
-        self.allMazes = []
+        self.finishedMazes = []
+        self.failedMazes = []
         self.steps = 0
 
     def solveMaze(self, maze):
-        if maze.hasDoors:
-            path = astar(maze, maze.startingPoint, maze.endingPoint)
-            if path is not None:
-                self.steps = len(path) - 1
-                print("exit reached without key interactions")
-            else:
-                print("exit unreachable without key")
-                if maze.doorNumber == 1:
-                    print("one key mode")
-                    path = astar(maze, maze.startingPoint, maze.redKey)
-                    if path is not None:
-                        print("reached key, going for exit")
-                        maze.redKeyActivated = True
-                        self.steps = len(path) - 1
-                        path = astar(maze, maze.redKey, maze.endingPoint)
-                        if path is not None:
-                            print("exit reached")
-                            self.steps += len(path) - 1
-                        else:
-                            self.steps = 0
-                            print("key reached, no path to exit")
-                    else:
-                        self.steps = 0
-                        print("failed to reach key")
-                if maze.doorNumber == 2:
-                    print("two key mode")
-                    keyorder = [maze.redKey, maze.greenKey]
+        self.steps = 0
+        keyArr = []
 
-        else:
-            path = astar(maze, maze.startingPoint, maze.endingPoint)
-            if path is not None:
-                self.steps = len(path) - 1
+        def checkRoute(start, end, path):
+            print("\n" + str(start) + " -> " + str(end))
+            temp = astar(maze, start, end)
+            print("TEMP: ", temp)
+            if temp is not None:
+                path += temp[1:]
+                print("PATH: ", path)
+                return True
             else:
-                self.steps = 0
+                return False
 
-        print("\n\nITERATION STEPS")
-        print("".join(str(self.steps)))
-        print("\n\n")
-        self.allMazes.append(maze)
-        self.totalSteps.append(self.steps)
+        def createKeyArr():
+            for i in range(maze.doorNumber):
+                keyArr.append(i + 1)
+
+        def logic(remainingKeys, start, end, path, depth=0):
+            print(depth, "===============================================")
+            print(depth, "1st checkroute")
+            if checkRoute(start, maze.endingPoint, path):
+                return True
+
+            # print("start: ", start, "end:", end, "remainingKeys", remainingKeys)
+            permutations = list(itertools.permutations(remainingKeys))
+            # print("permutations:", permutations)
+            for keys in permutations:
+                # print(">>>")
+                # print("permutations:", permutations)
+                # print("keys:", keys)
+                # print("<<<")
+                new_keys = list(keys)[1:]
+                # print("new keys:", new_keys)
+
+                print(depth, "2nd checkroute, new keys: ", new_keys)
+                if checkRoute(start, maze.getKeyPos(keys[0]), path):
+                    maze.openDoors(keys[0])
+                    # print("status: ", maze.doorsStatus)
+                    # print("2ND CHECKORUTE PASSED")
+                    if new_keys == []:
+                        print(depth, "3rd checkroute")
+                        if checkRoute(maze.getKeyPos(keys[0]), maze.endingPoint, path):
+                            raise ValueError('reached exit')
+
+                    for otherKey in new_keys:
+                        print("DUPA")
+                        # print("key: ", otherKey, "keyPos:", maze.getKeyPos(otherKey))
+                        logic(new_keys, maze.getKeyPos(keys[0]), maze.getKeyPos(otherKey), path, depth + 1)
+                # else:
+                # print("2ND CHECKROUTE FAILED!!!!")
+
+        createKeyArr()
+        path = []
+        try:
+            logic(keyArr, maze.startingPoint, maze.endingPoint, path)
+        except ValueError as e:
+            print(e)
+        print("\n\nSTEPS")
+        print(len(path))
 
     def stats(self):
         for i in range(len(self.usingDoors)):

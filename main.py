@@ -1,6 +1,9 @@
+
+
 from Maze import Maze
 from Astar import astar
 from Solver import Solver
+
 
 
 if __name__ == '__main__':
@@ -10,7 +13,7 @@ if __name__ == '__main__':
     # while i < 2:
     maze = Maze(4, True)
 
-    player =      [[2, 0, 0, 0],
+    player =      [[0, 0, 0, 2],
                    [0, 0, 0, 0],
                    [0, 0, 0, 0],
                    [0, 1, 0, 0]]
@@ -31,10 +34,13 @@ if __name__ == '__main__':
                   [1, 0, 0, 0]]
 
     maze.override(player, elevation, doors, keys, True, [True, True, False])
-    maze.toString()
+    maze.toString(True)
 
+    # print("\n\n\nRED KEY: " + str(maze.getKeyPos(1)))
     # path = astar(maze, maze.startingPoint, maze.endingPoint)
     Solver.solveMaze(solver, maze)
+
+
 
         # print("\n\nPATH")
         # print(path)
