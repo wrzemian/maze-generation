@@ -20,11 +20,8 @@ class Maze:
         self.initElevation()
         if hasDoors:
             self.redKey = []
-            self.redKeyActivated = None
             self.greenKey = []
-            self.greenKeyActivated = None
             self.blueKey = []
-            self.blueKeyActivated = None
             self.doorsCoords = []
             self.doorsStatus = [False, False, False]
             self.initDoors()
@@ -57,31 +54,25 @@ class Maze:
             if self.doorArr[0]:
                 self.doorNumber = 1
                 self.redKey = self.findInArray(self.keys, 1)
-                self.redKeyActivated = False
                 self.doorsCoords[0] = self.redKey
             else:
                 self.redKey = []
-                self.redKeyActivated = False
                 self.doorsCoords[0] = []
 
             if self.doorArr[1]:
                 self.doorNumber = 2
                 self.greenKey = self.findInArray(self.keys, 2)
-                self.greenKeyActivated = False
                 self.doorsCoords[1] = self.greenKey
             else:
                 self.greenKey = []
-                self.greenKeyActivated = False
                 self.doorsCoords[1] = []
 
             if self.doorArr[2]:
                 self.doorNumber = 3
                 self.blueKey = self.findInArray(self.keys, 3)
-                self.blueKeyActivated = False
                 self.doorsCoords[2] = self.blueKey
             else:
                 self.blueKey = []
-                self.blueKeyActivated = False
                 self.doorsCoords[2] = []
 
     def initPlayer(self):
@@ -135,17 +126,14 @@ class Maze:
                         if i == 0:
                             self.redKey.append(x)
                             self.redKey.append(y)
-                            self.redKeyActivated = False
                             self.doorsCoords.append(self.redKey)
                         if i == 1:
                             self.greenKey.append(x)
                             self.greenKey.append(y)
-                            self.greenKeyActivated = False
                             self.doorsCoords.append(self.greenKey)
                         if i == 2:
                             self.blueKey.append(x)
                             self.blueKey.append(y)
-                            self.blueKeyActivated = False
                             self.doorsCoords.append(self.blueKey)
                         break
 

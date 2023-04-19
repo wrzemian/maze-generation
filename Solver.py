@@ -4,9 +4,8 @@ import itertools
 
 class Solver:
     def __init__(self):
-        self.totalSteps = []
-        self.finishedMazes = []
-        self.failedMazes = []
+        self.allSteps = []
+        self.allMazes = []
         self.steps = 0
 
     def solveMaze(self, maze):
@@ -32,7 +31,7 @@ class Solver:
             print(depth, "===============================================")
             print(depth, "1st checkroute")
             if checkRoute(start, maze.endingPoint, path):
-                return True
+                raise ValueError('\n\nREACHED EXIT')
 
             # print("start: ", start, "end:", end, "remainingKeys", remainingKeys)
             permutations = list(itertools.permutations(remainingKeys))
@@ -43,22 +42,23 @@ class Solver:
                 # print("keys:", keys)
                 # print("<<<")
                 new_keys = list(keys)[1:]
-                # print("new keys:", new_keys)
+                print("new keys:", new_keys)
+                if new_keys is not None:
+                    print(depth, "2nd checkroute, new keys: ", new_keys)
+                    if checkRoute(start, maze.getKeyPos(keys[0]), path):
+                        maze.openDoors(keys[0])
+                        # print("status: ", maze.doorsStatus)
+                        # print("2ND CHECKORUTE PASSED")
+                        if not new_keys:
+                            print(depth, "3rd checkroute")
+                            if checkRoute(maze.getKeyPos(keys[0]), maze.endingPoint, path):
+                                raise ValueError('\n\nREACHED EXIT')
 
-                print(depth, "2nd checkroute, new keys: ", new_keys)
-                if checkRoute(start, maze.getKeyPos(keys[0]), path):
-                    maze.openDoors(keys[0])
-                    # print("status: ", maze.doorsStatus)
-                    # print("2ND CHECKORUTE PASSED")
-                    if new_keys == []:
-                        print(depth, "3rd checkroute")
-                        if checkRoute(maze.getKeyPos(keys[0]), maze.endingPoint, path):
-                            raise ValueError('reached exit')
+                        for otherKey in new_keys:
+                            print("DUPA")
+                            # print("key: ", otherKey, "keyPos:", maze.getKeyPos(otherKey))
+                            logic(new_keys, maze.getKeyPos(keys[0]), maze.getKeyPos(otherKey), path, depth + 1)
 
-                    for otherKey in new_keys:
-                        print("DUPA")
-                        # print("key: ", otherKey, "keyPos:", maze.getKeyPos(otherKey))
-                        logic(new_keys, maze.getKeyPos(keys[0]), maze.getKeyPos(otherKey), path, depth + 1)
                 # else:
                 # print("2ND CHECKROUTE FAILED!!!!")
 
@@ -66,14 +66,19 @@ class Solver:
         path = []
         try:
             logic(keyArr, maze.startingPoint, maze.endingPoint, path)
+            self.allMazes.append(maze)
         except ValueError as e:
             print(e)
-        print("\n\nSTEPS")
-        print(len(path))
+            print("\n\nSTEPS")
+            print(len(path))
+            self.allSteps.append(len(path))
+        else:
+            print("\n\nNO ROUTE")
 
-    def stats(self):
-        for i in range(len(self.usingDoors)):
-            if self.usingDoors[i]:
-                self.allMazes[i].toString(True)
 
-        return sum(self.totalSteps)
+    # def stats(self):
+    #     for i in range(len(self.usingDoors)):
+    #         if self.usingDoors[i]:
+    #             self.allMazes[i].toString(True)
+    #
+    #     return sum(self.totalSteps)
