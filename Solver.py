@@ -55,7 +55,7 @@ class Solver:
                                 raise ValueError('\n\nREACHED EXIT')
 
                         for otherKey in new_keys:
-                            print("DUPA")
+                            # print("DUPA")
                             # print("key: ", otherKey, "keyPos:", maze.getKeyPos(otherKey))
                             logic(new_keys, maze.getKeyPos(keys[0]), maze.getKeyPos(otherKey), path, depth + 1)
 
