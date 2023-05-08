@@ -3,8 +3,7 @@ import random
 
 class Maze:
 
-
-    def __init__(self, size=12, hasDoors=False):
+    def __init__(self, size=12, hasDoors=False, dummy=False):
         self.keys = None
         self.doors = None
         self.elevation = None
@@ -16,16 +15,18 @@ class Maze:
         self.hasDoors = hasDoors
         self.doorArr = [False, False, False]
 
-        self.initPlayer()
-        self.initElevation()
+        if not dummy:
+            self.initPlayer()
+            self.initElevation()
         if hasDoors:
             self.redKey = []
             self.greenKey = []
             self.blueKey = []
             self.doorsCoords = []
             self.doorsStatus = [False, False, False]
-            self.initDoors()
-            self.initKeys()
+            if not dummy:
+                self.initDoors()
+                self.initKeys()
 
     def findInArray(self, where, what):
         outcome = []
@@ -122,7 +123,7 @@ class Maze:
                     x = random.randint(0, self.size - 1)
                     y = random.randint(0, self.size - 1)
                     if self.keys[x][y] == 0 and self.player[x][y] == 0 and self.doors[x][y] == 0:
-                        self.keys[x][y] = i+1
+                        self.keys[x][y] = i + 1
                         if i == 0:
                             self.redKey.append(x)
                             self.redKey.append(y)
@@ -138,10 +139,10 @@ class Maze:
                         break
 
     def getKeyPos(self, number):
-        return self.doorsCoords[number-1]
+        return self.doorsCoords[number - 1]
 
     def openDoors(self, number):
-        self.doorsStatus[number-1] = True
+        self.doorsStatus[number - 1] = True
 
     def toString(self, rich=False):
         print("PLAYER")
@@ -169,3 +170,4 @@ class Maze:
                 print(self.greenKey)
                 print("\nBLUE KEY")
                 print(self.blueKey)
+        print("\n\n")
