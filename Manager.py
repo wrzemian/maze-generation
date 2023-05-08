@@ -10,10 +10,15 @@ class Manager:
         self.size = size
         self.doors = doors
         self.shardSize = shardSize
+        self.solved = 0
         self.mazes = []
         self.shards = []
         self.steps = []
         self.solver = Solver()
+
+    def stats(self):
+        print("SOLVED: ", self.solved)
+        print("SOLVED PERCENT: ", self.solved / len(self.mazes))
 
     def generateShards(self):
 
@@ -57,10 +62,11 @@ class Manager:
 
         for _ in range(self.iterations):
             maze = Maze(self.size, self.doors)
-            self.mazes.append(maze)
+            self.mazes.append(copy.deepcopy(maze))
             steps = self.solver.solveMaze(maze)
             if steps:
                 self.steps.append(steps)
+                self.solved += 1
             else:
                 self.steps.append(0)
             divideIntoShards()

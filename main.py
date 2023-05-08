@@ -3,15 +3,21 @@ from Maze import Maze
 from Astar import astar
 from Solver import Solver
 from Manager import Manager
+import time
 
 
 if __name__ == '__main__':
-    manager = Manager(1, 4, False, 2)
+    start = time.time()
+    manager = Manager(20000, 4, False, 2)
     manager.generateShards()
-    for mz in manager.mazes:
-        mz.toString(True)
-    for temp in manager.shards:
-        temp.toString(True)
+    end = time.time()
+    print("ELAPSED TIME: ", end - start)
+    manager.stats()
+
+    # for mz in manager.mazes:
+    #     mz.toString()
+    # for temp in manager.shards:
+    #     temp.toString()
 
 
 
