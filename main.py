@@ -8,7 +8,7 @@ import time
 
 if __name__ == '__main__':
     start = time.time()
-    manager = Manager(20000, 4, False, 2)
+    manager = Manager(1, 12, False, 3)
     manager.generateShards()
     end = time.time()
     print("ELAPSED TIME: ", end - start)
@@ -18,8 +18,6 @@ if __name__ == '__main__':
     #     mz.toString()
     # for temp in manager.shards:
     #     temp.toString()
-
-
 
     # solver = Solver()
     #
@@ -58,20 +56,18 @@ if __name__ == '__main__':
     # # path = astar(maze, maze.startingPoint, maze.endingPoint)
     # Solver.solveMaze(solver, maze)
 
-
-
-        # print("\n\nPATH")
-        # print(path)
-        # if path is not None:
-        #     print("\nPATH VALUES")
-        #     temp = []
-        #     for pos in path:
-        #         temp.append(maze.elevation[pos[0]][pos[1]])
-        #     print(temp)
-        #     print("\nMOVES REQUIRED")
-        #     print(len(path) - 1)
-        #     print("\n")
-        # i += 1
+    # print("\n\nPATH")
+    # print(path)
+    # if path is not None:
+    #     print("\nPATH VALUES")
+    #     temp = []
+    #     for pos in path:
+    #         temp.append(maze.elevation[pos[0]][pos[1]])
+    #     print(temp)
+    #     print("\nMOVES REQUIRED")
+    #     print(len(path) - 1)
+    #     print("\n")
+    # i += 1
 
     # print("\n\nSOLVER TOTAL")
     # print(solver.stats())

@@ -17,7 +17,8 @@ class Manager:
         self.solver = Solver()
 
     def stats(self):
-        print("SOLVED: ", self.solved)
+        print("SOLVABLE: ", self.solved)
+        print("ALL: ", self.iterations)
         print("SOLVED PERCENT: ", self.solved / len(self.mazes))
 
     def generateShards(self):
@@ -35,6 +36,10 @@ class Manager:
                 blueFlag = False
                 for i in range(int(self.shardSize)):
                     for j in range(int(self.shardSize)):
+                        # print("i: ", i)
+                        # print("j: ", j)
+                        # print("block: ", block)
+                        # print("val: ", maze.player[i + block[0]][j + block[1]])
                         tempPlayer[i][j] = maze.player[i + block[0]][j + block[1]]
                         tempElevation[i][j] = maze.elevation[i + block[0]][j + block[1]]
                         if maze.hasDoors:
@@ -59,6 +64,9 @@ class Manager:
                 if block[0] > self.size / self.shardSize:
                     block[0] = 0
                     block[1] += self.shardSize
+                    if block[1] > self.size / self.shardSize:
+                        block[1] = 0
+
 
         for _ in range(self.iterations):
             maze = Maze(self.size, self.doors)
