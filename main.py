@@ -8,7 +8,7 @@ import time
 
 if __name__ == '__main__':
     start = time.time()
-    manager = Manager(20000, 12, False, 3)
+    manager = Manager(1000, 12, False, 3)
     manager.generateShards()
     end = time.time()
     print("\n\nELAPSED TIME: ", end - start)
