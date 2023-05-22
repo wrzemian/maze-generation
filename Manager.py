@@ -25,7 +25,6 @@ class Manager:
         # print(self.steps)
         print("MAX LENGTH: ", max(self.steps))
 
-
     def generateShards(self):
 
         def divideIntoShards():
@@ -66,15 +65,15 @@ class Manager:
                 # for temp in self.shards:
                 #     temp.toString(True)
                 block[0] += self.geneSize
-                if block[0] > self.size / self.geneSize:
+                if block[0] >= self.size:
                     block[0] = 0
                     block[1] += self.geneSize
-                    if block[1] > self.size / self.geneSize:
+                    if block[1] >= self.size:
                         block[1] = 0
 
         for _ in range(self.iterations):
             if _ % 100 == 0:
-                sys.stdout.write('\r' + "GENERATION STATUS: " + str(round(_/self.iterations, 2) * 100) + "%")
+                sys.stdout.write('\r' + "GENERATION STATUS: " + str(round(_ / self.iterations, 2) * 100) + "%")
             maze = Maze(self.size, self.doors)
             self.mazes.append(copy.deepcopy(maze))
             steps = self.solver.solveMaze(maze)
@@ -84,3 +83,5 @@ class Manager:
             else:
                 self.steps.append(0)
             divideIntoShards()
+
+

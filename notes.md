@@ -7,7 +7,7 @@
 - one player
 - one goal
 - multiple number of doors
-- multiple number of keys
+- multiple number of keys <-- this is missing
 - only one object on a tile
 
 ## FITNESS FUNCTIONS:
@@ -16,10 +16,19 @@
 	
 - infeasible:
 	- penalty for each violation of rules
+  		- elevation > 6
+    	- elevation < 1
+        - more than 1 thing on tile
+        - doors > 3
+        - doors < 0
+        - keys > 3
+        - keys < 0
+        - more than 1 player
+        - more than 1 exit
 	- small penalty if all rules are followed, but level is unsolvable
 
 ## PROCEEDINGS:
 - 30 generations
 - feasible max 200 individuals
 - infeasible max 1000 individuals
-- restults from averaging all feasible levels
+- results from averaging all feasible levels
