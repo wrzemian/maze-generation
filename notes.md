@@ -32,3 +32,5 @@
 - feasible max 200 individuals
 - infeasible max 1000 individuals
 - results from averaging all feasible levels
+- crossover
+- mutation

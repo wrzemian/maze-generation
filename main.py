@@ -59,7 +59,9 @@ if __name__ == '__main__':
                            num_parents_mating=2,
                            fitness_func=fitness,
                            num_genes=16,
-                           initial_population=population_vector)
+                           initial_population=population_vector,
+                           crossover_type="uniform",
+                           crossover_probability=0.5)
 
     ga_instance.run()
     ga_instance.plot_fitness()
