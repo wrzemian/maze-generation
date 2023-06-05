@@ -7,15 +7,21 @@ from Astar import astar
 from Solver import Solver
 from Manager import Manager
 import time
-batchSize = 20
+batchSize = 20000
+mazeSize = 12
+geneSize = 3
+genesInSolution = int(int(mazeSize) ** 2 / int(geneSize) ** 2)
 solver = Solver()
-manager = Manager(batchSize, 12, False, 3)
+manager = Manager(batchSize, mazeSize, False, geneSize)
+genePoolSize = len(manager.genePool)
+
+
 
 
 def fitness(ga_instance, solution, solution_idx):
-    fitMaze = Maze(12, False)
+    fitMaze = Maze(mazeSize, False)
     genes = [copy.deepcopy(manager.genePool[int(i)]) for i in numpy.round(solution).astype(int)]
-    fitMaze.overrideFormGenes(12, 3, genes)
+    fitMaze.overrideFormGenes(mazeSize, geneSize, genes)
     status = solver.solveMaze(fitMaze)
     if status is not False:
         return status
@@ -41,33 +47,42 @@ if __name__ == '__main__':
     print("\n\nELAPSED TIME: ", end - start)
     manager.stats()
 
-    print("STARTING MAZE:\n")
+    # print("STARTING MAZE:\n")
     # print(manager.mazes[0].toString())
     # for gene in manager.genePool:
     #     print(gene.toString())
 
     num_solutions = 1200
-    population_vector = numpy.zeros(shape=(num_solutions, 16))
+    population_vector = numpy.zeros(shape=(num_solutions, genesInSolution))
     for solution_idx in range(num_solutions):
-        initialPop = numpy.random.randint(0, batchSize * 16, size=16)
+        initialPop = numpy.random.randint(0, genePoolSize, size=genesInSolution)
         initialPop = initialPop.astype(numpy.uint8)
         population_vector[solution_idx, :] = initialPop
 
-    print(population_vector)
+    # print(population_vector)
 
     ga_instance = pygad.GA(num_generations=30,
                            num_parents_mating=2,
                            fitness_func=fitness,
-                           num_genes=16,
+                           num_genes=genesInSolution,
                            initial_population=population_vector,
                            crossover_type="uniform",
-                           crossover_probability=0.5)
+                           crossover_probability=0.35,
+                           mutation_type="random",
+                           mutation_probability=0.25,
+                           mutation_by_replacement=True,
+                           random_mutation_min_val=0,
+                           random_mutation_max_val=genePoolSize - 1)
 
     ga_instance.run()
-    ga_instance.plot_fitness()
     solution, solution_fitness, solution_idx = ga_instance.best_solution()
+
+
+
+    # ga_instance.plot_fitness()
+    # solution, solution_fitness, solution_idx = ga_instance.best_solution()
     # print("Parameters of the best solution : {solution}".format(solution=solution))
-    print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+    # print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
     # print("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
 
     # maze = Maze(12, False)
