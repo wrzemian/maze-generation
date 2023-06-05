@@ -254,31 +254,38 @@ class Maze:
     def checkMultipleThingsOnTile(self):
         counter = 0
         pos = self.findInArray(self.player, 1)
-        if self.keys[pos[0]][pos[1]] != 0:
+        if pos is None:
             counter -= 1
-        if self.doors[pos[0]][pos[1]] != 0:
-            counter -= 1
+        else:
+            if self.keys[pos[0]][pos[1]] != 0:
+                counter -= 1
+            if self.doors[pos[0]][pos[1]] != 0:
+                counter -= 1
         pos = self.findInArray(self.player, 2)
-        if self.keys[pos[0]][pos[1]] != 0:
+        if pos is None:
             counter -= 1
-        if self.doors[pos[0]][pos[1]] != 0:
-            counter -= 1
+        else:
+            if self.keys[pos[0]][pos[1]] != 0:
+                counter -= 1
+            if self.doors[pos[0]][pos[1]] != 0:
+                counter -= 1
         pos = self.findInArray(self.keys, 1)
-        if self.doors[pos[0]][pos[1]] != 0:
+        if pos is not None and self.doors[pos[0]][pos[1]] != 0:
             counter -= 1
         pos = self.findInArray(self.keys, 2)
-        if self.doors[pos[0]][pos[1]] != 0:
+        if pos is not None and self.doors[pos[0]][pos[1]] != 0:
             counter -= 1
         pos = self.findInArray(self.keys, 3)
-        if self.doors[pos[0]][pos[1]] != 0:
+        if pos is not None and self.doors[pos[0]][pos[1]] != 0:
             counter -= 1
         return counter
 
     def checkPlayerDoorAmount(self):
         counter = 0
         pos = self.findInArray(self.player, 1)
-        if len(pos) > 2:
+        if pos is not None and len(pos) >= 2:
             counter -= 1
         pos = self.findInArray(self.player, 2)
-        if len(pos) > 2:
+        if pos is not None and len(pos) >= 2:
             counter -= 1
+        return counter

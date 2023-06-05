@@ -1,19 +1,20 @@
 import numpy
 import pygad
+import copy
 
 from Maze import Maze
 from Astar import astar
 from Solver import Solver
 from Manager import Manager
 import time
-batchSize = 2000
+batchSize = 20
 solver = Solver()
 manager = Manager(batchSize, 12, False, 3)
 
 
 def fitness(ga_instance, solution, solution_idx):
     fitMaze = Maze(12, False)
-    genes = [manager.genePool[int(i)] for i in numpy.round(solution).astype(int)]
+    genes = [copy.deepcopy(manager.genePool[int(i)]) for i in numpy.round(solution).astype(int)]
     fitMaze.overrideFormGenes(12, 3, genes)
     status = solver.solveMaze(fitMaze)
     if status is not False:
@@ -21,10 +22,10 @@ def fitness(ga_instance, solution, solution_idx):
     else:
         result = 0
         result += fitMaze.checkElevation()
-        # result += fitMaze.checkMultipleThingsOnTile()
+        result += fitMaze.checkMultipleThingsOnTile()
         result += fitMaze.checkDoors()
         result += fitMaze.checkKeys()
-        # result += fitMaze.checkPlayerDoorAmount()
+        result += fitMaze.checkPlayerDoorAmount()
 
         if result == 0:
             return -0.1
@@ -35,11 +36,12 @@ def fitness(ga_instance, solution, solution_idx):
 if __name__ == '__main__':
     start = time.time()
 
-    manager.generateShards()
+    manager.generateGenes()
     end = time.time()
     print("\n\nELAPSED TIME: ", end - start)
     manager.stats()
-    # print("STARTING MAZE:\n")
+
+    print("STARTING MAZE:\n")
     # print(manager.mazes[0].toString())
     # for gene in manager.genePool:
     #     print(gene.toString())
@@ -51,6 +53,8 @@ if __name__ == '__main__':
         initialPop = initialPop.astype(numpy.uint8)
         population_vector[solution_idx, :] = initialPop
 
+    print(population_vector)
+
     ga_instance = pygad.GA(num_generations=30,
                            num_parents_mating=2,
                            fitness_func=fitness,
@@ -58,7 +62,7 @@ if __name__ == '__main__':
                            initial_population=population_vector)
 
     ga_instance.run()
-    ga_instance.plot_result()
+    ga_instance.plot_fitness()
     solution, solution_fitness, solution_idx = ga_instance.best_solution()
     # print("Parameters of the best solution : {solution}".format(solution=solution))
     print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))

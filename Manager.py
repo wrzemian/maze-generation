@@ -25,7 +25,7 @@ class Manager:
         # print(self.steps)
         print("MAX LENGTH: ", max(self.steps))
 
-    def generateShards(self):
+    def generateGenes(self):
 
         def divideIntoShards():
             block = [0, 0]
