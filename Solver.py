@@ -7,6 +7,17 @@ class Solver:
         self.steps = 0
 
     def solveMaze(self, maze):
+        if not maze.startingPoint:
+            return False
+        if len(maze.startingPoint) > 2:
+            return False
+
+        if not maze.endingPoint:
+            return False
+        if len(maze.endingPoint) > 2:
+            return False
+
+
         self.steps = 0
         keyArr = []
 

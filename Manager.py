@@ -27,7 +27,7 @@ class Manager:
 
     def generateGenes(self):
 
-        def divideIntoShards():
+        def divideIntoGenes():
             block = [0, 0]
             tempPlayer = [[0 for _ in range(self.geneSize)] for _ in range(self.geneSize)]
             tempElevation = [[0 for _ in range(self.geneSize)] for _ in range(self.geneSize)]
@@ -49,12 +49,13 @@ class Manager:
                         if maze.hasDoors:
                             tempDoors[i][j] = maze.doors[i + block[0]][j + block[1]]
                             tempKeys[i][j] = maze.keys[i + block[0]][j + block[1]]
-                            if maze.keys[i + block[0]][j + block[1]] == 1 and redFlag is not False:
+                            if maze.keys[i + block[0]][j + block[1]] == 1:
                                 redFlag = True
-                            if maze.keys[i + block[0]][j + block[1]] == 2 and greenFlag is not False:
+                            if maze.keys[i + block[0]][j + block[1]] == 2:
                                 greenFlag = True
-                            if maze.keys[i + block[0]][j + block[1]] == 3 and blueFlag is not False:
+                            if maze.keys[i + block[0]][j + block[1]] == 3:
                                 blueFlag = True
+
 
                 tempMaze.override(tempPlayer, tempElevation, tempDoors, tempKeys,
                                   self.doors, [redFlag, greenFlag, blueFlag])
@@ -82,6 +83,6 @@ class Manager:
                 self.solved += 1
             else:
                 self.steps.append(0)
-            divideIntoShards()
+            divideIntoGenes()
 
 

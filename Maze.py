@@ -35,7 +35,7 @@ class Maze:
                 if where[i][j] == what:
                     outcome.append(i)
                     outcome.append(j)
-                    return outcome
+        return outcome
 
     def overrideFormGenes(self, mazeSize, geneSize, genes):
         self.size = mazeSize
@@ -59,13 +59,59 @@ class Maze:
                     # print("val: ", genes[geneNR].elevation[i][j])
                     self.player[i + block[0]][j + block[1]] = genes[geneNR].player[i][j]
                     self.elevation[i + block[0]][j + block[1]] = genes[geneNR].elevation[i][j]
+                    if genes[geneNR].hasDoors:
+                        self.doors[i + block[0]][j + block[1]] = genes[geneNR].doors[i][j]
+                        self.keys[i + block[0]][j + block[1]] = genes[geneNR].keys[i][j]
+                        if genes[geneNR].keys[i][j] == 1:
+                            redFlag = True
+                        if genes[geneNR].keys[i][j] == 2:
+                            greenFlag = True
+                        if genes[geneNR].keys[i][j] == 3:
+                            blueFlag = True
             block[0] += geneSize
             if block[0] >= mazeSize:
                 block[0] = 0
                 block[1] += geneSize
                 if block[1] >= mazeSize:
                     block[1] = 0
-            # self.toString()
+        self.startingPoint = self.findInArray(self.player, 1)
+        self.endingPoint = self.findInArray(self.player, 2)
+        if redFlag or blueFlag or greenFlag is True:
+            self.doorsCoords.append([0, 0])
+            self.doorsCoords.append([0, 0])
+            self.doorsCoords.append([0, 0])
+        if redFlag:
+            redKey = self.findInArray(self.keys, 1)
+            if redKey is not None:
+                self.doorNumber = 1
+                self.doorArr[0] = True
+                self.redKey = redKey
+                self.doorsCoords[0] = self.redKey
+            else:
+                self.redKey = []
+                self.doorsCoords[0] = []
+        if greenFlag:
+            greenKey = self.findInArray(self.keys, 2)
+            if greenKey is not None:
+                self.doorNumber = 2
+                self.doorArr[1] = True
+                self.greenKey = greenKey
+                self.doorsCoords[1] = self.greenKey
+            else:
+                self.greenKey = []
+                self.doorsCoords[1] = []
+        if blueFlag:
+            blueKey = self.findInArray(self.keys, 3)
+            if blueKey is not None:
+                self.doorNumber = 3
+                self.doorArr[2] = True
+                self.blueKey = blueKey
+                self.doorsCoords[2] = self.blueKey
+            else:
+                self.blueKey = []
+                self.doorsCoords[2] = []
+
+
 
 
     def override(self, player, elevation, doors, keys, hasDoors=False, doorArr=[False, False, False]):
@@ -253,39 +299,20 @@ class Maze:
 
     def checkMultipleThingsOnTile(self):
         counter = 0
-        pos = self.findInArray(self.player, 1)
-        if pos is None:
-            counter -= 1
-        else:
-            if self.keys[pos[0]][pos[1]] != 0:
-                counter -= 1
-            if self.doors[pos[0]][pos[1]] != 0:
-                counter -= 1
-        pos = self.findInArray(self.player, 2)
-        if pos is None:
-            counter -= 1
-        else:
-            if self.keys[pos[0]][pos[1]] != 0:
-                counter -= 1
-            if self.doors[pos[0]][pos[1]] != 0:
-                counter -= 1
-        pos = self.findInArray(self.keys, 1)
-        if pos is not None and self.doors[pos[0]][pos[1]] != 0:
-            counter -= 1
-        pos = self.findInArray(self.keys, 2)
-        if pos is not None and self.doors[pos[0]][pos[1]] != 0:
-            counter -= 1
-        pos = self.findInArray(self.keys, 3)
-        if pos is not None and self.doors[pos[0]][pos[1]] != 0:
-            counter -= 1
+        for i in range(self.size):
+            for j in range(self.size):
+                if (self.player[i][j] != 0 and self.doors[i][j] == 0 and self.keys[i][j] == 0) or (self.player[i][j] == 0 and self.doors[i][j] != 0 and self.keys[i][j] == 0) or (self.player[i][j] == 0 and self.doors[i][j] == 0 and self.keys[i][j] != 0):
+                    blank = 0
+                else:
+                    counter -= 1
         return counter
 
     def checkPlayerDoorAmount(self):
         counter = 0
         pos = self.findInArray(self.player, 1)
-        if pos is not None and len(pos) >= 2:
+        if pos is not None and len(pos) > 2:
             counter -= 1
         pos = self.findInArray(self.player, 2)
-        if pos is not None and len(pos) >= 2:
+        if pos is not None and len(pos) > 2:
             counter -= 1
         return counter
