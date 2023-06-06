@@ -32,5 +32,8 @@
 - feasible max 200 individuals
 - infeasible max 1000 individuals
 - results from averaging all feasible levels
-- crossover
-- mutation
+
+## TODO:
+- make doors work with more than 1 key
+- implement FI-2POP instead of current algorithm
+- change A* for BFS because its less problematic

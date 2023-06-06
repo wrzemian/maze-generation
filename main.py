@@ -7,10 +7,10 @@ from Astar import astar
 from Solver import Solver
 from Manager import Manager
 import time
-batchSize = 100
+batchSize = 20000
 mazeSize = 12
 geneSize = 3
-doorStatus = True
+doorStatus = False
 genesInSolution = int(int(mazeSize) ** 2 / int(geneSize) ** 2)
 solver = Solver()
 manager = Manager(batchSize, mazeSize, doorStatus, geneSize)
@@ -45,12 +45,13 @@ def fitness(ga_instance, solution, solution_idx):
         fitMaze.toString(True)
 
 
-def callback_generation(ga_instance):
-    print('\r' + "Generation = {generation}, Fitness = {fitness}"
-          .format(generation=ga_instance.generations_completed, fitness=ga_instance.best_solution()[1]), end='')
+# def callback_generation(ga_instance):
+    # print('\r' + "Generation = {generation}, Fitness = {fitness}"
+    #       .format(generation=ga_instance.generations_completed, fitness=ga_instance.best_solution()[1]), end='')
 
 
 if __name__ == '__main__':
+    allStart = time.time()
     start = time.time()
 
     manager.generateGenes()
@@ -64,7 +65,6 @@ if __name__ == '__main__':
     # for gene in manager.genePool:
     #     print(gene.toString())
 
-
     num_solutions = 1200
     population_vector = numpy.zeros(shape=(num_solutions, genesInSolution))
     for solution_idx in range(num_solutions):
@@ -73,24 +73,46 @@ if __name__ == '__main__':
         population_vector[solution_idx, :] = initialPop
 
     # print(population_vector)
+    bestSol = 0
+    bestSolParams = [0, 0]
+    counter = 0
+    for i in numpy.arange(0.00, 1.0, 0.05):
+        for j in numpy.arange(0.00, 1.0, 0.05):
+            print("\riteration: {iter}/400".format(iter=counter), end='')
+            ga_instance = 0
+            ga_instance = pygad.GA(num_generations=30,
+                                   num_parents_mating=2,
+                                   fitness_func=fitness,
+                                   num_genes=genesInSolution,
+                                   initial_population=population_vector,
+                                   crossover_type="uniform",
+                                   crossover_probability=i,
+                                   mutation_type="random",
+                                   mutation_probability=j,
+                                   mutation_by_replacement=True,
+                                   random_mutation_min_val=0,
+                                   random_mutation_max_val=genePoolSize - 1)
+                                   # on_generation=callback_generation)
 
-    ga_instance = pygad.GA(num_generations=30,
-                           num_parents_mating=2,
-                           fitness_func=fitness,
-                           num_genes=genesInSolution,
-                           initial_population=population_vector,
-                           crossover_type="uniform",
-                           crossover_probability=0.35,
-                           mutation_type="random",
-                           mutation_probability=0.25,
-                           mutation_by_replacement=True,
-                           random_mutation_min_val=0,
-                           random_mutation_max_val=genePoolSize - 1,
-                           on_generation=callback_generation)
+            ga_instance.run()
+            solution, solution_fitness, solution_idx = ga_instance.best_solution()
+            ga_instance.plot_fitness()
+            if solution_fitness > bestSol:
+                bestSol = solution_fitness
+                bestSolParams = [i, j]
+                f = open("outcome.txt", "a")
+                f.write("\nnew best value for crossover: {cross}, mutation: {mut} ".format(cross=bestSolParams[0], mut=bestSolParams[1]))
+                f.close()
+            counter += 1
 
-    ga_instance.run()
-    solution, solution_fitness, solution_idx = ga_instance.best_solution()
-    ga_instance.plot_fitness()
+        #     print("ALIVE")
+        # print("STILL ALIVE")
+    f = open("outcome.txt", "a")
+    f.write("\nBEST SOLUTION: {bs}, CROSSOVER: {cross}, MUTATION: {mut} ".format(bs=bestSol, cross=bestSolParams[0], mut=bestSolParams[1]))
+    f.close()
+
+    allEnd = time.time()
+    print("\n\nELAPSED TIME: ", allEnd - allStart)
 
     # solution, solution_fitness, solution_idx = ga_instance.best_solution()
     # print("Parameters of the best solution : {solution}".format(solution=solution))
