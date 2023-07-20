@@ -8,3 +8,19 @@ new best value for crossover: 0.5, mutation: 0.1
 new best value for crossover: 0.75, mutation: 0.15000000000000002 
 new best value for crossover: 0.9, mutation: 0.05 
 BEST SOLUTION: 91, CROSSOVER: 0.9, MUTATION: 0.05
+new best value for crossover: 0.0, mutation: 0.0 
+new best value for crossover: 0.0, mutation: 0.05 
+new best value for crossover: 0.0, mutation: 0.1 
+new best value for crossover: 0.0, mutation: 0.15000000000000002 
+new best value for crossover: 0.15000000000000002, mutation: 0.05 
+BEST SOLUTION: 86, CROSSOVER: 0.15000000000000002, MUTATION: 0.05 
+new best value for crossover: 0.0, mutation: 0.0 
+new best value for crossover: 0.0, mutation: 0.05 
+new best value for crossover: 0.0, mutation: 0.1 
+new best value for crossover: 0.05, mutation: 0.1 
+BEST SOLUTION: 84, CROSSOVER: 0.05, MUTATION: 0.1 
+new best value for crossover: 0.0, mutation: 0.0 
+new best value for crossover: 0.0, mutation: 0.05 
+new best value for crossover: 0.35000000000000003, mutation: 0.05 
+new best value for crossover: 0.4, mutation: 0.1 
+BEST SOLUTION: 88, CROSSOVER: 0.4, MUTATION: 0.1

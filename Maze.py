@@ -3,30 +3,26 @@ import random
 
 class Maze:
 
-    def __init__(self, size=12, hasDoors=False, dummy=False):
+    def __init__(self, size=12, hasDoors=False):
         self.keys = None
         self.doors = None
         self.elevation = None
         self.player = None
+
         self.startingPoint = None
         self.endingPoint = None
-        self.doorNumber = None
         self.size = size
         self.hasDoors = hasDoors
-        self.doorArr = [False, False, False]
 
-        if not dummy:
-            self.initPlayer()
-            self.initElevation()
         if hasDoors:
-            self.redKey = []
-            self.greenKey = []
-            self.blueKey = []
-            self.doorsCoords = []
-            self.doorsStatus = [False, False, False]
-            if not dummy:
-                self.initDoors()
-                self.initKeys()
+            self.keyArr = [[], [], []]
+
+    def randomize(self):
+        self.initPlayer()
+        self.initElevation()
+        if self.hasDoors:
+            self.initKeys()
+            self.initDoors()
 
     def findInArray(self, where, what):
         outcome = []
@@ -43,31 +39,22 @@ class Maze:
         self.elevation = [[0 for _ in range(mazeSize)] for _ in range(mazeSize)]
         self.doors = [[0 for _ in range(mazeSize)] for _ in range(mazeSize)]
         self.keys = [[0 for _ in range(mazeSize)] for _ in range(mazeSize)]
-        redFlag = False
-        greenFlag = False
-        blueFlag = False
         block = [0, 0]
-        count = 0
+
         for geneNR in range(len(genes)):
-            # print("geneNR: ", geneNR)
-            # print(genes[geneNR].toString())
             for i in range(int(geneSize)):
                 for j in range(int(geneSize)):
-                    # print("i: ", i)
-                    # print("j: ", j)
-                    # print("block: ", block)
-                    # print("val: ", genes[geneNR].elevation[i][j])
                     self.player[i + block[0]][j + block[1]] = genes[geneNR].player[i][j]
                     self.elevation[i + block[0]][j + block[1]] = genes[geneNR].elevation[i][j]
                     if genes[geneNR].hasDoors:
                         self.doors[i + block[0]][j + block[1]] = genes[geneNR].doors[i][j]
                         self.keys[i + block[0]][j + block[1]] = genes[geneNR].keys[i][j]
                         if genes[geneNR].keys[i][j] == 1:
-                            redFlag = True
+                            self.keyArr[0].append(genes[geneNR].keys[i][j])
                         if genes[geneNR].keys[i][j] == 2:
-                            greenFlag = True
+                            self.keyArr[1].append(genes[geneNR].keys[i][j])
                         if genes[geneNR].keys[i][j] == 3:
-                            blueFlag = True
+                            self.keyArr[2].append(genes[geneNR].keys[i][j])
             block[0] += geneSize
             if block[0] >= mazeSize:
                 block[0] = 0
@@ -76,82 +63,6 @@ class Maze:
                     block[1] = 0
         self.startingPoint = self.findInArray(self.player, 1)
         self.endingPoint = self.findInArray(self.player, 2)
-        if redFlag or blueFlag or greenFlag is True:
-            self.doorsCoords.append([0, 0])
-            self.doorsCoords.append([0, 0])
-            self.doorsCoords.append([0, 0])
-        if redFlag:
-            redKey = self.findInArray(self.keys, 1)
-            if redKey is not None:
-                self.doorNumber = 1
-                self.doorArr[0] = True
-                self.redKey = redKey
-                self.doorsCoords[0] = self.redKey
-            else:
-                self.redKey = []
-                self.doorsCoords[0] = []
-        if greenFlag:
-            greenKey = self.findInArray(self.keys, 2)
-            if greenKey is not None:
-                self.doorNumber = 2
-                self.doorArr[1] = True
-                self.greenKey = greenKey
-                self.doorsCoords[1] = self.greenKey
-            else:
-                self.greenKey = []
-                self.doorsCoords[1] = []
-        if blueFlag:
-            blueKey = self.findInArray(self.keys, 3)
-            if blueKey is not None:
-                self.doorNumber = 3
-                self.doorArr[2] = True
-                self.blueKey = blueKey
-                self.doorsCoords[2] = self.blueKey
-            else:
-                self.blueKey = []
-                self.doorsCoords[2] = []
-
-
-
-
-    def override(self, player, elevation, doors, keys, hasDoors=False, doorArr=[False, False, False]):
-        self.size = len(player[0])
-        self.hasDoors = hasDoors
-        self.player = player
-        self.elevation = elevation
-        self.doors = doors
-        self.keys = keys
-        self.startingPoint = self.findInArray(self.player, 1)
-        self.endingPoint = self.findInArray(self.player, 2)
-        self.doorArr = doorArr
-
-        if hasDoors:
-            self.doorsCoords.append([0, 0])
-            self.doorsCoords.append([0, 0])
-            self.doorsCoords.append([0, 0])
-            if self.doorArr[0]:
-                self.doorNumber = 1
-                self.redKey = self.findInArray(self.keys, 1)
-                self.doorsCoords[0] = self.redKey
-            else:
-                self.redKey = []
-                self.doorsCoords[0] = []
-
-            if self.doorArr[1]:
-                self.doorNumber = 2
-                self.greenKey = self.findInArray(self.keys, 2)
-                self.doorsCoords[1] = self.greenKey
-            else:
-                self.greenKey = []
-                self.doorsCoords[1] = []
-
-            if self.doorArr[2]:
-                self.doorNumber = 3
-                self.blueKey = self.findInArray(self.keys, 3)
-                self.doorsCoords[2] = self.blueKey
-            else:
-                self.blueKey = []
-                self.doorsCoords[2] = []
 
     def initPlayer(self):
         self.player = [[0 for _ in range(self.size)] for _ in range(self.size)]
@@ -174,54 +85,41 @@ class Maze:
     def initElevation(self):
         self.elevation = [[random.randint(1, 6) for _ in range(self.size)] for _ in range(self.size)]
 
-    def initDoors(self):
-        self.doors = [[0 for _ in range(self.size)] for _ in range(self.size)]
-
-        self.doorNumber = random.randint(1, 3)
-        if self.doorNumber != 0:
-            for i in range(self.doorNumber):
-                self.doorArr[i] = True
-
-        for i in range(self.doorNumber + 1):
-            for x in range(random.randint(1, self.size)):
-                while True:
-                    x = random.randint(0, self.size - 1)
-                    y = random.randint(0, self.size - 1)
-                    if self.doors[x][y] == 0 and self.player[x][y] == 0:
-                        self.doors[x][y] = i
-                        break
-
     def initKeys(self):
         self.keys = [[0 for _ in range(self.size)] for _ in range(self.size)]
 
-        for i in range(len(self.doorArr)):
-            if self.doorArr[i]:
-                while True:
-                    x = random.randint(0, self.size - 1)
-                    y = random.randint(0, self.size - 1)
-                    if self.keys[x][y] == 0 and self.player[x][y] == 0 and self.doors[x][y] == 0:
-                        self.keys[x][y] = i + 1
-                        if i == 0:
-                            self.redKey.append(x)
-                            self.redKey.append(y)
-                            self.doorsCoords.append(self.redKey)
-                        if i == 1:
-                            self.greenKey.append(x)
-                            self.greenKey.append(y)
-                            self.doorsCoords.append(self.greenKey)
-                        if i == 2:
-                            self.blueKey.append(x)
-                            self.blueKey.append(y)
-                            self.doorsCoords.append(self.blueKey)
-                        break
+        for i in range(3):
+            keyNumber = random.randint(0, self.size - 1)
+            counter = 0
+            while counter < keyNumber:
+                x = random.randint(0, self.size - 1)
+                y = random.randint(0, self.size - 1)
+                if self.keys[x][y] == 0 and self.player[x][y] == 0:
+                    self.keys[x][y] = i + 1
+                    if i == 0:
+                        self.keyArr[0].append([x, y])
+                        counter += 1
+                    if i == 1:
+                        self.keyArr[1].append([x, y])
+                        counter += 1
+                    if i == 2:
+                        self.keyArr[2].append([x, y])
+                        counter += 1
 
-    def getKeyPos(self, number):
-        return self.doorsCoords[number - 1]
+    def initDoors(self):
+        self.doors = [[0 for _ in range(self.size)] for _ in range(self.size)]
 
-    def openDoors(self, number):
-        self.doorsStatus[number - 1] = True
+        for i in range(3):
+            if self.keyArr[0]:
+                for x in range(random.randint(1, self.size)):
+                    while True:
+                        x = random.randint(0, self.size - 1)
+                        y = random.randint(0, self.size - 1)
+                        if self.doors[x][y] == 0 and self.player[x][y] == 0 and self.keys[x][y] == 0:
+                            self.doors[x][y] = i + 1
+                            break
 
-    def toString(self, rich=False):
+    def visualize(self, rich=False):
         print("PLAYER")
         print('\n'.join(' '.join(str(x) for x in row) for row in self.player))
         print("\nELEVATION")
@@ -229,9 +127,7 @@ class Maze:
         if self.hasDoors:
             if rich:
                 print("\nDOOR TYPES")
-                print(self.doorArr)
-                print("\nDOOR NUMBER")
-                print(self.doorNumber)
+                print(self.keyArr)
             print("\nDOORS")
             print('\n'.join(' '.join(str(x) for x in row) for row in self.doors))
             print("\nKEYS")
@@ -241,78 +137,10 @@ class Maze:
                 print(self.startingPoint)
                 print("\nEND")
                 print(self.endingPoint)
-                print("\nRED KEY")
-                print(self.redKey)
-                print("\nGREEN KEY")
-                print(self.greenKey)
-                print("\nBLUE KEY")
-                print(self.blueKey)
+                print("\nRED KEYS")
+                print(self.keyArr[0])
+                print("\nGREEN KEYS")
+                print(self.keyArr[1])
+                print("\nBLUE KEYS")
+                print(self.keyArr[2])
         print("\n\n")
-
-    def checkElevation(self):
-        counterUP = 0
-        counterDOWN = 0
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.elevation[i][j] > 6:
-                    counterUP += 1
-                if self.elevation[i][j] < 0:
-                    counterDOWN += 1
-        result = 0
-        if counterUP != 0:
-            result -= 1
-        if counterDOWN != 0:
-            result -= 1
-        return result
-
-    def checkDoors(self):
-        counterUP = 0
-        counterDOWN = 0
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.doors[i][j] > 3:
-                    counterUP += 1
-                if self.doors[i][j] < 0:
-                    counterDOWN += 1
-        result = 0
-        if counterUP != 0:
-            result -= 1
-        if counterDOWN != 0:
-            result -= 1
-        return result
-
-    def checkKeys(self):
-        counterUP = 0
-        counterDOWN = 0
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.keys[i][j] > 3:
-                    counterUP += 1
-                if self.keys[i][j] < 0:
-                    counterDOWN += 1
-        result = 0
-        if counterUP != 0:
-            result -= 1
-        if counterDOWN != 0:
-            result -= 1
-        return result
-
-    def checkMultipleThingsOnTile(self):
-        counter = 0
-        for i in range(self.size):
-            for j in range(self.size):
-                if (self.player[i][j] != 0 and self.doors[i][j] == 0 and self.keys[i][j] == 0) or (self.player[i][j] == 0 and self.doors[i][j] != 0 and self.keys[i][j] == 0) or (self.player[i][j] == 0 and self.doors[i][j] == 0 and self.keys[i][j] != 0):
-                    blank = 0
-                else:
-                    counter -= 1
-        return counter
-
-    def checkPlayerDoorAmount(self):
-        counter = 0
-        pos = self.findInArray(self.player, 1)
-        if pos is not None and len(pos) > 2:
-            counter -= 1
-        pos = self.findInArray(self.player, 2)
-        if pos is not None and len(pos) > 2:
-            counter -= 1
-        return counter
