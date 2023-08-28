@@ -24,9 +24,9 @@ class BFSPathFinder:
 
                 for dr, dc in directions:
                     new_row, new_col = row + dr, col + dc
-
-                    if self.isValid(new_row, new_col, row, col, path, i):
-                        queue.append((new_row, new_col, path + [(row, col)]))
+                    new_path = path + [(row, col)]
+                    if self.isValid(new_row, new_col, row, col, new_path, i):
+                        queue.append((new_row, new_col, new_path))
             i = i + 1
         return []
 

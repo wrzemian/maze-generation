@@ -34,6 +34,8 @@
 - results from averaging all feasible levels
 
 ## TODO:
-- make BFS quicker
+- optimize BFS algorithm by probably:
+  - find a way to determine if maze is unsolvable to save time
+  - decrease number of solving iteration form 10 (based on experiments or research)
 - implement FI-2POP instead of current algorithm
 

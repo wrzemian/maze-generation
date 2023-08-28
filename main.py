@@ -33,11 +33,11 @@ if __name__ == '__main__':
         [0, 2, 0, 1, 0]
     ]
     maze.keys = [
-        [0, 0, 0, 0, 2],
+        [0, 0, 0, 0, 3],
         [0, 2, 0, 0, 0],
-        [0, 0, 0, 0, 1],
+        [2, 0, 0, 0, 1],
         [0, 0, 0, 0, 0],
-        [0, 0, 1, 0, 0]
+        [1, 0, 1, 0, 0]
     ]
     maze.findKeys()
     maze.visualize(True)
@@ -51,6 +51,7 @@ if __name__ == '__main__':
     if shortest_path:
         print("Shortest path from start to exit:")
         print(shortest_path)
+        print("Steps:")
         print(len(shortest_path))
     else:
         print("No path found to the exit.")
