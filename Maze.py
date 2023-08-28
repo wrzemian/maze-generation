@@ -1,6 +1,5 @@
 import random
 
-
 class Maze:
 
     def __init__(self, size=12, hasDoors=False):
@@ -13,9 +12,7 @@ class Maze:
         self.endingPoint = None
         self.size = size
         self.hasDoors = hasDoors
-
-        if hasDoors:
-            self.keyArr = [[], [], []]
+        self.keysArr = [[], [], []]
 
     def randomize(self):
         self.initPlayer()
@@ -29,9 +26,12 @@ class Maze:
         for i in range(self.size):
             for j in range(self.size):
                 if where[i][j] == what:
-                    outcome.append(i)
-                    outcome.append(j)
+                    outcome.append([i, j])
         return outcome
+
+    def findKeys(self):
+        for i in range(3):
+            self.keysArr[i] = self.findInArray(self.keys, i+1)
 
     def overrideFormGenes(self, mazeSize, geneSize, genes):
         self.size = mazeSize
@@ -120,27 +120,28 @@ class Maze:
                             break
 
     def visualize(self, rich=False):
-        print("PLAYER")
-        print('\n'.join(' '.join(str(x) for x in row) for row in self.player))
-        print("\nELEVATION")
-        print('\n'.join(' '.join(str(x) for x in row) for row in self.elevation))
+        if self.player:
+            print("PLAYER")
+            print('\n'.join(' '.join(str(x) for x in row) for row in self.player))
+        if self.elevation:
+            print("\nELEVATION")
+            print('\n'.join(' '.join(str(x) for x in row) for row in self.elevation))
         if self.hasDoors:
-            if rich:
-                print("\nDOOR TYPES")
-                print(self.keyArr)
-            print("\nDOORS")
-            print('\n'.join(' '.join(str(x) for x in row) for row in self.doors))
-            print("\nKEYS")
-            print('\n'.join(' '.join(str(x) for x in row) for row in self.keys))
+            if self.doors:
+                print("\nDOORS")
+                print('\n'.join(' '.join(str(x) for x in row) for row in self.doors))
+            if self.keys:
+                print("\nKEYS")
+                print('\n'.join(' '.join(str(x) for x in row) for row in self.keys))
             if rich:
                 print("\nSTART")
                 print(self.startingPoint)
                 print("\nEND")
                 print(self.endingPoint)
                 print("\nRED KEYS")
-                print(self.keyArr[0])
+                print(self.keysArr[0])
                 print("\nGREEN KEYS")
-                print(self.keyArr[1])
+                print(self.keysArr[1])
                 print("\nBLUE KEYS")
-                print(self.keyArr[2])
+                print(self.keysArr[2])
         print("\n\n")

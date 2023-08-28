@@ -34,6 +34,6 @@
 - results from averaging all feasible levels
 
 ## TODO:
-- make doors work with more than 1 key
+- make BFS quicker
 - implement FI-2POP instead of current algorithm
-- change A* for BFS because its less problematic
+
