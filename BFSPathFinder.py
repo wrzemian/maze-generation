@@ -37,54 +37,30 @@ class BFSPathFinder:
         return []  # Return an empty list if no valid path is found.
 
     def isValid(self, new_row, new_col, visited, row, col, path):
-        debug = False
-        # print(path)
-        if debug:
-            # print("\n")
-            print(path)
-        # print(new_row, new_col)
-        if not(0 <= new_row < self.maze.size and 0 <= new_col < self.maze.size):
-            if debug:
-                print("OUTSIDE MAZE")
-            return False
-        if not(abs(self.maze.elevation[new_row][new_col] - self.maze.elevation[row][col]) <= 2):
-            if debug:
-                print("SIZE DIFF")
-            return False
-        # if not((new_row, new_col) not in path):
-        #     if debug:
-        #         print("ALREADY VISITED")
-        #     return False
-        if not(self.maze.doors[new_row][new_col] == 0):
-            if debug:
-                print("HITTING DOOR")
-        if self.maze.doors[new_row][new_col] == 1: # and (new_row, new_col) not in visited:
-            if debug:
-                print("CHECKING FOR RED KEY")
-            if not self.can_use_doors(1, path):
-                if debug:
-                    print("NO RED KEY")
+        i = 0
+        while i < 3:
+            if not (0 <= new_row < self.maze.size and 0 <= new_col < self.maze.size):
                 return False
-        if self.maze.doors[new_row][new_col] == 2: # and (new_row, new_col) not in visited:
-            if debug:
-                print("CHECKING FOR GREEN KEY")
-            if not self.can_use_doors(2, path):
-                if debug:
-                    print("NO GREEN KEY")
+            if not (abs(self.maze.elevation[new_row][new_col] - self.maze.elevation[row][col]) <= 2):
                 return False
-        if self.maze.doors[new_row][new_col] == 3: # and (new_row, new_col) not in visited:
-            if debug:
-                print("CHECKING FOR RED KEY")
-            if not self.can_use_doors(3, path):
-                if debug:
-                    print("NO RED KEY")
-                return False
-            if debug:
-                print("RED KEY ACHIEVED")
-            # return False
+            # if not (path.count((new_row, new_col)) <= i):
+            #     continue
+            # print("TRYING FOR i:", i)
+            if path.count((new_row, new_col)) >= i:
+                i = i + 1
+                continue
+            if not (self.maze.doors[new_row][new_col] == 0):
+                if self.maze.doors[new_row][new_col] == 1:
+                    if not self.can_use_doors(1, path):
+                        return False
+                if self.maze.doors[new_row][new_col] == 2:
+                    if not self.can_use_doors(2, path):
+                        return False
+                if self.maze.doors[new_row][new_col] == 3:
+                    if not self.can_use_doors(3, path):
+                        return False
+            return True
 
-        # print("IS VALIDDDDDDDDDDDDDDDDDDDDDDDDD")
-        return True
 
     def can_use_doors(self, keyType, visitedSpots):
         keys_to_use = self.maze.keysArr[keyType - 1]
