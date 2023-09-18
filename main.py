@@ -8,50 +8,32 @@ if __name__ == '__main__':
     # maze.randomize()
     # maze.visualize(False)
 
-    maze = Maze(5, True)
-    maze.player = [
-        [1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 2]
-    ]
-    maze.elevation = [
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0]
-    ]
-    maze.startingPoint = (0, 0)
-    maze.endingPoint = (4, 4)
-    maze.doors = [
-        [0, 0, 0, 0, 0],
-        [3, 0, 2, 2, 2],
-        [0, 2, 0, 0, 0],
-        [0, 2, 0, 1, 1],
-        [0, 2, 0, 1, 0]
-    ]
-    maze.keys = [
-        [0, 0, 0, 0, 3],
-        [0, 2, 0, 0, 0],
-        [2, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0],
-        [1, 0, 1, 0, 0]
-    ]
-    maze.findKeys()
-    maze.visualize(True)
+    maze = Maze(12, False)
 
-    path_finder = BFSPathFinder(maze)
     start = time.time()
-    # for i in range(100):
-    shortest_path = path_finder.find_shortest_path()
+    paths = []
+    times = []
+    for i in range(100):
+        start2 = time.time()
+        maze.randomize()
+        maze.visualize(True)
+        path_finder = BFSPathFinder(maze)
+        shortest_path = path_finder.find_shortest_path()
+        paths.append(shortest_path)
+        end2 = time.time()
+        times.append(end2 - start2)
+
     end = time.time()
     print("\n\nELAPSED TIME: ", end - start)
-    if shortest_path:
-        print("Shortest path from start to exit:")
-        print(shortest_path)
-        print("Steps:")
-        print(len(shortest_path))
-    else:
-        print("No path found to the exit.")
+    print("solvable: ", len(paths))
+    print("max: ", max(paths))
+    print("avg: ", sum(paths)/len(paths))
+    print("max T: ", max(times))
+    print("avg T: ", sum(times) / len(times))
+    # if shortest_path:
+    #     print("Shortest path from start to exit:")
+    #     print(shortest_path)
+    #     print("Steps:")
+    #     print(len(shortest_path))
+    # else:
+    #     print("No path found to the exit.")

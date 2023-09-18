@@ -15,6 +15,14 @@ class Maze:
         self.keysArr = [[], [], []]
 
     def randomize(self):
+        self.keys = None
+        self.doors = None
+        self.elevation = None
+        self.player = None
+        self.startingPoint = None
+        self.endingPoint = None
+        self.keysArr = [[], [], []]
+
         self.initPlayer()
         self.initElevation()
         if self.hasDoors:
@@ -28,6 +36,9 @@ class Maze:
                 if where[i][j] == what:
                     outcome.append([i, j])
         return outcome
+
+    def elevationAt(self, x, y):
+        return self.elevation[x][y]
 
     def findKeys(self):
         for i in range(3):
@@ -50,11 +61,11 @@ class Maze:
                         self.doors[i + block[0]][j + block[1]] = genes[geneNR].doors[i][j]
                         self.keys[i + block[0]][j + block[1]] = genes[geneNR].keys[i][j]
                         if genes[geneNR].keys[i][j] == 1:
-                            self.keyArr[0].append(genes[geneNR].keys[i][j])
+                            self.keysArr[0].append(genes[geneNR].keys[i][j])
                         if genes[geneNR].keys[i][j] == 2:
-                            self.keyArr[1].append(genes[geneNR].keys[i][j])
+                            self.keysArr[1].append(genes[geneNR].keys[i][j])
                         if genes[geneNR].keys[i][j] == 3:
-                            self.keyArr[2].append(genes[geneNR].keys[i][j])
+                            self.keysArr[2].append(genes[geneNR].keys[i][j])
             block[0] += geneSize
             if block[0] >= mazeSize:
                 block[0] = 0
@@ -97,20 +108,20 @@ class Maze:
                 if self.keys[x][y] == 0 and self.player[x][y] == 0:
                     self.keys[x][y] = i + 1
                     if i == 0:
-                        self.keyArr[0].append([x, y])
+                        self.keysArr[0].append([x, y])
                         counter += 1
                     if i == 1:
-                        self.keyArr[1].append([x, y])
+                        self.keysArr[1].append([x, y])
                         counter += 1
                     if i == 2:
-                        self.keyArr[2].append([x, y])
+                        self.keysArr[2].append([x, y])
                         counter += 1
 
     def initDoors(self):
         self.doors = [[0 for _ in range(self.size)] for _ in range(self.size)]
 
         for i in range(3):
-            if self.keyArr[0]:
+            if self.keysArr[0]:
                 for x in range(random.randint(1, self.size)):
                     while True:
                         x = random.randint(0, self.size - 1)
@@ -126,6 +137,11 @@ class Maze:
         if self.elevation:
             print("\nELEVATION")
             print('\n'.join(' '.join(str(x) for x in row) for row in self.elevation))
+        if rich:
+            print("\nSTART")
+            print(self.startingPoint)
+            print("\nEND")
+            print(self.endingPoint)
         if self.hasDoors:
             if self.doors:
                 print("\nDOORS")
@@ -134,14 +150,12 @@ class Maze:
                 print("\nKEYS")
                 print('\n'.join(' '.join(str(x) for x in row) for row in self.keys))
             if rich:
-                print("\nSTART")
-                print(self.startingPoint)
-                print("\nEND")
-                print(self.endingPoint)
                 print("\nRED KEYS")
                 print(self.keysArr[0])
                 print("\nGREEN KEYS")
                 print(self.keysArr[1])
                 print("\nBLUE KEYS")
                 print(self.keysArr[2])
+
+
         print("\n\n")
