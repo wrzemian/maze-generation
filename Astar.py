@@ -1,7 +1,7 @@
 from Maze import Maze
 
-
 from queue import PriorityQueue
+
 
 class Node:
     def __init__(self, parent=None, position=None):
@@ -11,9 +11,17 @@ class Node:
         self.h = 0
         self.f = 0
         self.steps = 0
+        self.path = []
+
+        if parent:
+            self.path = parent.path[:]
+        if position:
+            self.path.append(self.position)
 
     def __eq__(self, other):
-        return self.position == other.position
+        if isinstance(other, Node):
+            return self.position == other.position
+        return False
 
     def __hash__(self):
         return hash(self.position)
@@ -25,17 +33,19 @@ class Node:
 def astar(maze, start, end):
     def get_neighbors(node):
         neighbors = []
-        for direction in [(0,1), (0,-1), (1,0), (-1,0)]:
+        for direction in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             neighbor_pos = (node.position[0] + direction[0], node.position[1] + direction[1])
-            if neighbor_pos[0] < 0 or neighbor_pos[0] >= maze.size or neighbor_pos[1] < 0 or neighbor_pos[1] >= maze.size:
+            if neighbor_pos[0] < 0 or neighbor_pos[0] >= maze.size or neighbor_pos[1] < 0 or neighbor_pos[
+                1] >= maze.size:
                 continue
-            if abs(maze.elevation[node.position[0]][node.position[1]] - maze.elevation[neighbor_pos[0]][neighbor_pos[1]]) > 2:
+            if abs(maze.elevation[node.position[0]][node.position[1]] - maze.elevation[neighbor_pos[0]][
+                neighbor_pos[1]]) > 2:
                 continue
-            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 1 and not maze.doorsStatus[0]:
+            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 1 and not can_use_doors(1, node):
                 continue
-            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 2 and not maze.doorsStatus[1]:
+            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 2 and not can_use_doors(2, node):
                 continue
-            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 3 and not maze.doorsStatus[2]:
+            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 3 and not can_use_doors(3, node):
                 continue
             new_node = Node(node, neighbor_pos)
             neighbors.append(new_node)
@@ -43,6 +53,16 @@ def astar(maze, start, end):
 
     def heuristic(node):
         return abs(node.position[0] - end[0]) + abs(node.position[1] - end[1])
+
+    def can_use_doors(keyType, node):
+        keys_to_use = maze.keysArr[keyType - 1]
+        print(node.path)
+        if len(keys_to_use) == 0:
+            return False
+        for key_cell in keys_to_use:
+            if tuple(key_cell) not in node.path:
+                return False
+        return True
 
     start_node = Node(None, start)
     end_node = Node(None, end)
@@ -55,10 +75,7 @@ def astar(maze, start, end):
         current_node = open_list.get()[1]
 
         if current_node == end_node:
-            path = []
-            while current_node is not None:
-                path.append(current_node.position)
-                current_node = current_node.parent
+            path = current_node.path
             return path[::-1]
             # return len(path[::-1]) - 1
 

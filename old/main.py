@@ -3,7 +3,6 @@ import pygad
 import copy
 
 from Maze import Maze
-from Astar import astar
 from Solver import Solver
 from Manager import Manager
 import time
