@@ -4,7 +4,7 @@ from queue import PriorityQueue
 
 
 class Node:
-    def __init__(self, parent=None, position=None):
+    def __init__(self, parent=None, position=None, path=None):
         self.parent = parent
         self.position = tuple(position)
         self.g = 0
@@ -13,10 +13,13 @@ class Node:
         self.steps = 0
         self.path = []
 
-        if parent:
-            self.path = parent.path[:]
-        if position:
-            self.path.append(self.position)
+        if path:
+            self.path = path
+        else:
+            if parent:
+                self.path = parent.path[:]
+            if position:
+                self.path.append(self.position)
 
     def __eq__(self, other):
         if isinstance(other, Node):
@@ -30,7 +33,7 @@ class Node:
         return self.f < other.f
 
 
-def astar(maze, start, end):
+def astar(maze, start, end, past_path=None):
     def get_neighbors(node):
         neighbors = []
         for direction in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
@@ -56,7 +59,6 @@ def astar(maze, start, end):
 
     def can_use_doors(keyType, node):
         keys_to_use = maze.keysArr[keyType - 1]
-        print(node.path)
         if len(keys_to_use) == 0:
             return False
         for key_cell in keys_to_use:
@@ -64,7 +66,7 @@ def astar(maze, start, end):
                 return False
         return True
 
-    start_node = Node(None, start)
+    start_node = Node(None, start, past_path)
     end_node = Node(None, end)
 
     open_list = PriorityQueue()
