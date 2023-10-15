@@ -30,13 +30,13 @@ def solve_maze(maze):
         # print("permutations:", permutations)
         for keys in permutations:
             new_keys = list(keys)[1:]
+            # print("keys:", keys)
             # print("new keys:", new_keys)
             if new_keys is not None:
                 # print(depth, "2nd checkroute, to key: ", keys[0])
                 # print("0TH: ", path)
                 if checkRoute(start, keys[0], path):
-                    print("2ND: ", path)
-                    # print("status: ", maze.doorsStatus)
+                    # print("2ND: ", path)
                     # print("2ND CHECKORUTE PASSED")
                     if not new_keys:
                         # print(depth, "3rd checkroute")
