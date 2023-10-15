@@ -12,9 +12,10 @@ class Node:
         self.f = 0
         self.steps = 0
         self.path = []
-
+        self.path_len = 0
         if path:
-            self.path = path
+            self.path = path[::-1]
+            self.path_len = len(path)
         else:
             if parent:
                 self.path = parent.path[:]
@@ -78,7 +79,7 @@ def astar(maze, start, end, past_path=None):
 
         if current_node == end_node:
             path = current_node.path
-            return path[::-1]
+            return path[start_node.path_len::]
             # return len(path[::-1]) - 1
 
         visited.add(current_node)

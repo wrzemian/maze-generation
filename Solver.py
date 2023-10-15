@@ -33,13 +33,15 @@ def solve_maze(maze):
             # print("new keys:", new_keys)
             if new_keys is not None:
                 # print(depth, "2nd checkroute, to key: ", keys[0])
+                # print("0TH: ", path)
                 if checkRoute(start, keys[0], path):
-                    print(path)
+                    print("2ND: ", path)
                     # print("status: ", maze.doorsStatus)
                     # print("2ND CHECKORUTE PASSED")
                     if not new_keys:
                         # print(depth, "3rd checkroute")
                         if checkRoute(keys[0], maze.endingPoint, path):
+                            # print("3RD: ", path)
                             raise ValueError('\n\nREACHED EXIT')
 
                     for otherKey in new_keys:
@@ -72,7 +74,7 @@ def solve_maze(maze):
         # print(e)
         # print("\n\nSTEPS: ", len(path))
         print(path)
-        return len(path)
+        return len(path)-1
     else:
         # print("\n\nNO ROUTE")
         return False
