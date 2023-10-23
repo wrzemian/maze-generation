@@ -6,7 +6,20 @@ def solve_maze(maze):
     path = []
     key_arr = []
 
+    def is_nested(input_list):
+        if isinstance(input_list, list):
+            if any(isinstance(item, list) for item in input_list):
+                return True  # List is nested
+            else:
+                return False  # List is flat
+        else:
+            return False  # Not a list at all
+
     def checkRoute(start, end, path):
+        if is_nested(start):
+            start = start[0]
+        if is_nested(end):
+            end = end[0]
         temp = astar(maze, start, end, path)
         if temp is not None:
             path += temp
@@ -50,17 +63,17 @@ def solve_maze(maze):
                         logic(new_keys, keys[0], otherKey, path, depth + 1)
 
     if not maze.startingPoint:
-        print("NO STARTING POINT")
+        # print("NO STARTING POINT")
         return False
     if len(maze.startingPoint) > 2:
-        print("MORE THAN ONE STARTING POINT")
+        # print("MORE THAN ONE STARTING POINT")
         return False
 
     if not maze.endingPoint:
-        print("NO END")
+        # print("NO END")
         return False
     if len(maze.endingPoint) > 2:
-        print("MORE THAN ONE END")
+        # print("MORE THAN ONE END")
         return False
 
     createKeyArr()
@@ -73,7 +86,7 @@ def solve_maze(maze):
     except ValueError as e:
         # print(e)
         # print("\n\nSTEPS: ", len(path))
-        print(path)
+        # print(path)
         return len(path)-1
     else:
         # print("\n\nNO ROUTE")

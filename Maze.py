@@ -44,6 +44,17 @@ class Maze:
         for i in range(3):
             self.keysArr[i] = self.findInArray(self.keys, i+1)
 
+    def override(self, player, elevation, doors, keys, hasDoors=False, keysArr=[[], [], []]):
+        self.size = len(player[0])
+        self.hasDoors = hasDoors
+        self.player = player
+        self.elevation = elevation
+        self.doors = doors
+        self.keys = keys
+        self.startingPoint = self.findInArray(self.player, 1)
+        self.endingPoint = self.findInArray(self.player, 2)
+        self.keysArr = keysArr
+
     def overrideFormGenes(self, mazeSize, geneSize, genes):
         self.size = mazeSize
         self.player = [[0 for _ in range(mazeSize)] for _ in range(mazeSize)]
@@ -58,14 +69,15 @@ class Maze:
                     self.player[i + block[0]][j + block[1]] = genes[geneNR].player[i][j]
                     self.elevation[i + block[0]][j + block[1]] = genes[geneNR].elevation[i][j]
                     if genes[geneNR].hasDoors:
+                        self.hasDoors = True
                         self.doors[i + block[0]][j + block[1]] = genes[geneNR].doors[i][j]
                         self.keys[i + block[0]][j + block[1]] = genes[geneNR].keys[i][j]
                         if genes[geneNR].keys[i][j] == 1:
-                            self.keysArr[0].append(genes[geneNR].keys[i][j])
+                            self.keysArr[0].append([i + block[0], j + block[1]])
                         if genes[geneNR].keys[i][j] == 2:
-                            self.keysArr[1].append(genes[geneNR].keys[i][j])
+                            self.keysArr[1].append([i + block[0], j + block[1]])
                         if genes[geneNR].keys[i][j] == 3:
-                            self.keysArr[2].append(genes[geneNR].keys[i][j])
+                            self.keysArr[2].append([i + block[0], j + block[1]])
             block[0] += geneSize
             if block[0] >= mazeSize:
                 block[0] = 0
@@ -156,6 +168,72 @@ class Maze:
                 print(self.keysArr[1])
                 print("\nBLUE KEYS")
                 print(self.keysArr[2])
-
-
         print("\n\n")
+
+    def checkElevation(self):
+        counterUP = 0
+        counterDOWN = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.elevation[i][j] > 6:
+                    counterUP += 1
+                if self.elevation[i][j] < 0:
+                    counterDOWN += 1
+        result = 0
+        if counterUP != 0:
+            result -= 1
+        if counterDOWN != 0:
+            result -= 1
+        return result
+
+    def checkDoors(self):
+        counterUP = 0
+        counterDOWN = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.doors[i][j] > 3:
+                    counterUP += 1
+                if self.doors[i][j] < 0:
+                    counterDOWN += 1
+        result = 0
+        if counterUP != 0:
+            result -= 1
+        if counterDOWN != 0:
+            result -= 1
+        return result
+
+    def checkKeys(self):
+        counterUP = 0
+        counterDOWN = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.keys[i][j] > 3:
+                    counterUP += 1
+                if self.keys[i][j] < 0:
+                    counterDOWN += 1
+        result = 0
+        if counterUP != 0:
+            result -= 1
+        if counterDOWN != 0:
+            result -= 1
+        return result
+
+    def checkMultipleThingsOnTile(self):
+        counter = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                if (self.player[i][j] != 0 and self.doors[i][j] == 0 and self.keys[i][j] == 0) or (self.player[i][j] == 0 and self.doors[i][j] != 0 and self.keys[i][j] == 0) or (self.player[i][j] == 0 and self.doors[i][j] == 0 and self.keys[i][j] != 0):
+                    blank = 0
+                else:
+                    counter -= 1
+        return counter
+
+    def checkPlayerDoorAmount(self):
+        counter = 0
+        pos = self.findInArray(self.player, 1)
+        if pos is not None and len(pos) > 2:
+            counter -= 1
+        pos = self.findInArray(self.player, 2)
+        if pos is not None and len(pos) > 2:
+            counter -= 1
+        return counter
