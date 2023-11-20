@@ -21,7 +21,7 @@ class Manager:
         self.steps = []
 
     def stats(self):
-        print("SOLVABLE: ", self.solved)
+        print("\nSOLVABLE: ", self.solved)
         print("ALL: ", self.iterations)
         print("SOLVED PERCENT: ", (self.solved / len(self.mazes)) * 100)
         print("AVERAGE LENGTH: ", sum(self.steps) / len(self.mazes))
@@ -33,32 +33,35 @@ class Manager:
         self.genetic_alghoritm()
 
     def genetic_alghoritm(self):
+        def initialize_population(gene_pool_size, genes_in_solution, num_solutions):
+            population_vector = numpy.zeros(shape=(num_solutions, genes_in_solution), dtype=numpy.uint8)
+            for solution_idx in range(num_solutions):
+                initial_pop = numpy.random.randint(0, gene_pool_size, size=genes_in_solution).astype(numpy.uint8)
+                population_vector[solution_idx, :] = initial_pop
+            return population_vector
+
         def fitness(ga_instance, solution, solution_idx):
             fitMaze = Maze(self.size, self.doors)
             genes = [copy.deepcopy(self.genePool[int(i)]) for i in numpy.round(solution).astype(int)]
             fitMaze.overrideFormGenes(self.size, self.geneSize, genes)
-            # print("SOLUTION: {s}, START: {x}, STOP: {y}".
-            #       format(s=solution_idx, x=fitMaze.findInArray(fitMaze.player, 1), y=fitMaze.findInArray(fitMaze.player, 2)))
-            # fitMaze.toString()
-            # status = False
-            try:
-                status = solve_maze(fitMaze)
-                if status is not False:
-                    return status
-                else:
-                    result = 0
-                    result += fitMaze.checkElevation()
-                    result += fitMaze.checkMultipleThingsOnTile()
-                    result += fitMaze.checkDoors()
-                    result += fitMaze.checkKeys()
-                    result += fitMaze.checkPlayerDoorAmount()
+            status = solve_maze(fitMaze)
+            if status is not False:
+                return status
+            else:
+                result = 0
+                result += fitMaze.checkElevation()
+                result += fitMaze.checkMultipleThingsOnTile()
+                result += fitMaze.checkDoors()
+                result += fitMaze.checkKeys()
+                result += fitMaze.checkPlayerDoorAmount()
 
-                    if result == 0:
-                        return -0.1
-                    else:
-                        return result
-            except IndexError as e:
-                fitMaze.visualize(True)
+                if result == 0:
+                    return -0.1
+                else:
+                    return result
+
+        def on_generation(ga_instance):
+            sys.stdout.write('\r' + "GENERATION " + str(ga_instance_f.generations_completed))
 
         start = time.time()
 
@@ -66,43 +69,61 @@ class Manager:
         genesInSolution = int(int(self.size) ** 2 / int(self.geneSize) ** 2)
         self.stats()
 
-        # print("STARTING MAZE:\n")
-        # print(manager.mazes[0].toString())
-        # for gene in manager.genePool:
-        #     print(gene.toString())
+        initial_population_f = initialize_population(genePoolSize, genesInSolution, 200)
+        initial_population_i = initialize_population(genePoolSize, genesInSolution, 1000)
 
-        num_solutions = 1200
-        population_vector = numpy.zeros(shape=(num_solutions, genesInSolution))
-        for solution_idx in range(num_solutions):
-            initialPop = numpy.random.randint(0, genePoolSize, size=genesInSolution)
-            initialPop = initialPop.astype(numpy.uint8)
-            population_vector[solution_idx, :] = initialPop
+        ga_instance_f = pygad.GA(num_generations=1,
+                                 num_parents_mating=2,
+                                 fitness_func=fitness,
+                                 num_genes=genesInSolution,
+                                 initial_population=initial_population_f,
+                                 crossover_type="uniform",
+                                 crossover_probability=0.4,
+                                 mutation_type="random",
+                                 mutation_probability=0.01,
+                                 mutation_by_replacement=True,
+                                 random_mutation_min_val=0,
+                                 random_mutation_max_val=genePoolSize - 1,
+                                 on_generation=on_generation)
 
-        # print(population_vector)
-        bestSol = 0
-        bestSolParams = [0, 0]
-        counter = 0
-        ga_instance = 0
-        ga_instance = pygad.GA(num_generations=30,
-                               num_parents_mating=2,
-                               fitness_func=fitness,
-                               num_genes=genesInSolution,
-                               initial_population=population_vector,
-                               crossover_type="uniform",
-                               crossover_probability=0.4,
-                               mutation_type="random",
-                               mutation_probability=0.01,
-                               mutation_by_replacement=True,
-                               random_mutation_min_val=0,
-                               random_mutation_max_val=genePoolSize - 1)
+        ga_instance_i = pygad.GA(num_generations=1,
+                                 num_parents_mating=2,
+                                 fitness_func=fitness,
+                                 num_genes=genesInSolution,
+                                 initial_population=initial_population_i,
+                                 crossover_type="uniform",
+                                 crossover_probability=0.4,
+                                 mutation_type="random",
+                                 mutation_probability=0.01,
+                                 mutation_by_replacement=True,
+                                 random_mutation_min_val=0,
+                                 random_mutation_max_val=genePoolSize - 1,
+                                 on_generation=on_generation)
 
-        ga_instance.run()
-        solution, solution_fitness, solution_idx = ga_instance.best_solution()
-        print("BEST SOL: ", solution_fitness)
-        ga_instance.plot_fitness()
+        for i in range(30):
+            ga_instance_f.run()
+            ga_instance_i.run()
+
+            combined_population = numpy.concatenate((ga_instance_f.population, ga_instance_i.population))
+            fitness_combined = numpy.concatenate(
+                (ga_instance_f.last_generation_fitness, ga_instance_i.last_generation_fitness))
+
+            sorted_indices = numpy.argsort(fitness_combined)[::-1]
+
+            ga_instance_f.population[:, :] = combined_population[sorted_indices[:200], :]
+            ga_instance_f.last_generation_fitness[:] = fitness_combined[sorted_indices[:200]]
+
+            ga_instance_i.population[:, :] = combined_population[sorted_indices[200:], :]
+            ga_instance_i.last_generation_fitness[:] = fitness_combined[sorted_indices[200:]]
+
+        solution, solution_fitness, solution_idx = ga_instance_f.best_solution()
+
+        print("\nSOLUTION MAX LENGTH: ", solution_fitness)
+        print("SOLUTION AVERAGE LENGTH: ",
+              sum(ga_instance_f.last_generation_fitness) / len(ga_instance_f.last_generation_fitness))
+        ga_instance_f.plot_fitness()
         end = time.time()
         print("\n\nELAPSED TIME: ", end - start)
-
 
     def generateGenes(self):
 
@@ -133,7 +154,6 @@ class Manager:
                             if maze.keys[i + block[0]][j + block[1]] == 3:
                                 keysArr[2].append(maze.keys[i + block[0]][j + block[1]])
 
-
                 tempMaze.override(tempPlayer, tempElevation, tempDoors, tempKeys,
                                   self.doors, keysArr)
                 # print("ITERATION: ", _)
@@ -163,5 +183,3 @@ class Manager:
             else:
                 self.steps.append(0)
             divideIntoGenes()
-
-

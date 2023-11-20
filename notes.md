@@ -38,4 +38,3 @@
   - find a way to determine if maze is unsolvable to save time
   - decrease number of solving iteration form 10 (based on experiments or research)
 - implement FI-2POP instead of current algorithm
-
