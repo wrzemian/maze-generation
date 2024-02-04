@@ -1,3 +1,4 @@
+from math import factorial
 from Astar import astar
 import itertools
 
@@ -5,24 +6,34 @@ import itertools
 def solve_maze(maze):
     path = []
     key_arr = []
+    cache = {}
 
     def is_nested(input_list):
         if isinstance(input_list, list):
             if any(isinstance(item, list) for item in input_list):
-                return True  # List is nested
+                return True
             else:
-                return False  # List is flat
+                return False
         else:
-            return False  # Not a list at all
+            return False
 
     def checkRoute(start, end, path):
         if is_nested(start):
             start = start[0]
         if is_nested(end):
             end = end[0]
+
+        cache_key = (tuple(start), tuple(end))
+
+        if cache_key in cache:
+            cached_path = cache[cache_key]
+            path.extend(cached_path)
+            return True
+
         temp = astar(maze, start, end, path)
         if temp is not None:
-            path += temp
+            path.extend(temp)
+            cache[cache_key] = temp
             return True
         else:
             return False
@@ -38,10 +49,18 @@ def solve_maze(maze):
         if checkRoute(start, maze.endingPoint, path):
             raise ValueError('\n\nREACHED EXIT')
 
+        if not remainingKeys:
+            return
+
+        total_permutations = factorial(len(remainingKeys))
+        checked_permutations = 0
+
         # print("start: ", start, "end:", end, "remainingKeys", remainingKeys)
-        permutations = list(itertools.permutations(remainingKeys))
-        # print("permutations:", permutations)
-        for keys in permutations:
+        for keys in itertools.permutations(remainingKeys):
+            if depth == 0:
+                checked_permutations += 1
+                print(f"  {checked_permutations / total_permutations * 100:.2f}%, klucze:", keys)
+
             new_keys = list(keys)[1:]
             # print("keys:", keys)
             # print("new keys:", new_keys)
@@ -58,7 +77,6 @@ def solve_maze(maze):
                             raise ValueError('\n\nREACHED EXIT')
 
                     for otherKey in new_keys:
-                        # print("DUPA")
                         # print("key: ", otherKey)
                         logic(new_keys, keys[0], otherKey, path, depth + 1)
 
@@ -85,9 +103,9 @@ def solve_maze(maze):
                 raise ValueError('\n\nREACHED EXIT')
     except ValueError as e:
         # print(e)
-        # print("\n\nSTEPS: ", len(path))
+        print("STEPS: ", len(path))
         # print(path)
         return len(path)-1
     else:
-        # print("\n\nNO ROUTE")
+        print("NO ROUTE")
         return False

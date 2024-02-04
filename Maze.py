@@ -112,7 +112,7 @@ class Maze:
         self.keys = [[0 for _ in range(self.size)] for _ in range(self.size)]
 
         for i in range(3):
-            keyNumber = random.randint(0, self.size - 1)
+            keyNumber = random.randint(0, 3)
             counter = 0
             while counter < keyNumber:
                 x = random.randint(0, self.size - 1)

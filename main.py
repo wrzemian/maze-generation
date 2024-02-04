@@ -71,7 +71,7 @@ if __name__ == '__main__':
     # outcome = solve_maze(maze)
     # print(outcome)
 
-    manager = Manager(2000, 12, False, 3)
+    manager = Manager(2000, 12, True, 3)
     manager.experiment()
     # for gene in manager.genePool:
     #     print(gene.visualize(True))

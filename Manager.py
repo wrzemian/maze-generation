@@ -170,8 +170,8 @@ class Manager:
                         block[1] = 0
 
         for _ in range(self.iterations):
-            if _ % 100 == 0:
-                sys.stdout.write('\r' + "GENERATION STATUS: " + str(round(_ / self.iterations, 2) * 100) + "%")
+            # if _ % 100 == 0:
+            sys.stdout.write('\r' + "GENERATION STATUS: " + str(_))
             maze = Maze(self.size, self.doors)
             maze.randomize()
             # maze.visualize(True)

@@ -36,8 +36,9 @@ class Node:
 
 def astar(maze, start, end, past_path=None):
     def get_neighbors(node):
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         neighbors = []
-        for direction in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+        for direction in directions:
             neighbor_pos = (node.position[0] + direction[0], node.position[1] + direction[1])
             if neighbor_pos[0] < 0 or neighbor_pos[0] >= maze.size or neighbor_pos[1] < 0 or neighbor_pos[
                 1] >= maze.size:
@@ -51,8 +52,7 @@ def astar(maze, start, end, past_path=None):
                 continue
             if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 3 and not can_use_doors(3, node):
                 continue
-            new_node = Node(node, neighbor_pos)
-            neighbors.append(new_node)
+            neighbors.append(Node(node, neighbor_pos))
         return neighbors
 
     def heuristic(node):
@@ -71,30 +71,41 @@ def astar(maze, start, end, past_path=None):
     end_node = Node(None, end)
 
     open_list = PriorityQueue()
+    open_set = set()  # Zestaw dla szybkiego sprawdzania obecności
     open_list.put((0, start_node))
-    visited = set()
+    open_set.add(start_node)
+    visited = {}  # Słownik zamiast zestawu
 
     while not open_list.empty():
         current_node = open_list.get()[1]
+        open_set.remove(current_node)
 
         if current_node == end_node:
-            path = current_node.path
-            return path[start_node.path_len::]
-            # return len(path[::-1]) - 1
+            return current_node.path[start_node.path_len::]
 
-        visited.add(current_node)
+        visited[current_node.position] = current_node
 
         for neighbor in get_neighbors(current_node):
-            if neighbor in visited:
+            if neighbor.position in visited:
                 continue
+
             neighbor.g = current_node.g + 1
             neighbor.h = heuristic(neighbor)
             neighbor.f = neighbor.g + neighbor.h
 
-            for (priority, open_node) in open_list.queue:
-                if open_node == neighbor and priority < neighbor.f:
-                    break
+            if neighbor.position in visited and visited[neighbor.position].f <= neighbor.f:
+                continue
+
+            if neighbor in open_set:
+                for (priority, open_node) in open_list.queue:
+                    if open_node == neighbor and priority <= neighbor.f:
+                        break
+                else:
+                    open_list.put((neighbor.f, neighbor))
+                    visited[neighbor.position] = neighbor
             else:
                 open_list.put((neighbor.f, neighbor))
+                open_set.add(neighbor)
+                visited[neighbor.position] = neighbor
 
     return None
