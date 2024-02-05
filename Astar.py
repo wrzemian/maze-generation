@@ -1,5 +1,5 @@
 from Maze import Maze
-
+import gc
 from queue import PriorityQueue
 
 
@@ -35,24 +35,24 @@ class Node:
 
 
 def astar(maze, start, end, past_path=None):
-    def get_neighbors(node):
+    neighbors_cache = {}
+
+    def get_neighbors(node, maze, neighbors_cache):
+        if node.position in neighbors_cache:
+            return neighbors_cache[node.position]
+
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         neighbors = []
         for direction in directions:
             neighbor_pos = (node.position[0] + direction[0], node.position[1] + direction[1])
-            if neighbor_pos[0] < 0 or neighbor_pos[0] >= maze.size or neighbor_pos[1] < 0 or neighbor_pos[
-                1] >= maze.size:
-                continue
-            if abs(maze.elevation[node.position[0]][node.position[1]] - maze.elevation[neighbor_pos[0]][
-                neighbor_pos[1]]) > 2:
-                continue
-            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 1 and not can_use_doors(1, node):
-                continue
-            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 2 and not can_use_doors(2, node):
-                continue
-            if maze.hasDoors and maze.doors[node.position[0]][node.position[1]] == 3 and not can_use_doors(3, node):
-                continue
-            neighbors.append(Node(node, neighbor_pos))
+            if 0 <= neighbor_pos[0] < maze.size and 0 <= neighbor_pos[1] < maze.size:
+                if abs(maze.elevation[node.position[0]][node.position[1]] - maze.elevation[neighbor_pos[0]][
+                    neighbor_pos[1]]) <= 2:
+                    if not maze.hasDoors or maze.doors[node.position[0]][node.position[1]] == 0 or can_use_doors(
+                            maze.doors[node.position[0]][node.position[1]], node):
+                        neighbors.append(Node(node, neighbor_pos))
+
+        neighbors_cache[node.position] = neighbors
         return neighbors
 
     def heuristic(node):
@@ -71,10 +71,10 @@ def astar(maze, start, end, past_path=None):
     end_node = Node(None, end)
 
     open_list = PriorityQueue()
-    open_set = set()  # Zestaw dla szybkiego sprawdzania obecności
+    open_set = set()
     open_list.put((0, start_node))
     open_set.add(start_node)
-    visited = {}  # Słownik zamiast zestawu
+    visited = {}
 
     while not open_list.empty():
         current_node = open_list.get()[1]
@@ -85,7 +85,7 @@ def astar(maze, start, end, past_path=None):
 
         visited[current_node.position] = current_node
 
-        for neighbor in get_neighbors(current_node):
+        for neighbor in get_neighbors(current_node, maze, neighbors_cache):
             if neighbor.position in visited:
                 continue
 

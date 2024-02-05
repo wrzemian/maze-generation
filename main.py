@@ -1,3 +1,5 @@
+import cProfile
+
 from Maze import Maze
 from Astar import astar
 from Solver import solve_maze
@@ -71,7 +73,7 @@ if __name__ == '__main__':
     # outcome = solve_maze(maze)
     # print(outcome)
 
-    manager = Manager(2000, 12, True, 3)
+    manager = Manager(20000, 12, True, 2)
     manager.experiment()
     # for gene in manager.genePool:
     #     print(gene.visualize(True))

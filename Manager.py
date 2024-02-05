@@ -99,7 +99,8 @@ class Manager:
                                  random_mutation_min_val=0,
                                  random_mutation_max_val=genePoolSize - 1,
                                  on_generation=on_generation)
-
+        best_sol = []
+        avg_sol = []
         for i in range(30):
             ga_instance_f.run()
             ga_instance_i.run()
@@ -116,14 +117,24 @@ class Manager:
             ga_instance_i.population[:, :] = combined_population[sorted_indices[200:], :]
             ga_instance_i.last_generation_fitness[:] = fitness_combined[sorted_indices[200:]]
 
-        solution, solution_fitness, solution_idx = ga_instance_f.best_solution()
+            best_sol.append(ga_instance_f.best_solution()[1])
+            avg_sol.append(numpy.mean(ga_instance_f.last_generation_fitness))
 
-        print("\nSOLUTION MAX LENGTH: ", solution_fitness)
-        print("SOLUTION AVERAGE LENGTH: ",
-              sum(ga_instance_f.last_generation_fitness) / len(ga_instance_f.last_generation_fitness))
         ga_instance_f.plot_fitness()
         end = time.time()
         print("\n\nELAPSED TIME: ", end - start)
+
+        with open('ga_results.txt', 'w') as file:
+            file.write("Best Solution:\n")
+            file.write(str(best_sol[-1]) + '\n')
+            file.write("\nAverage Solution:\n")
+            file.write(str(avg_sol[-1]) + '\n')
+            file.write("\nBest Solutions per Generation:\n")
+            file.write('\n'.join(map(str, best_sol)))
+            file.write("\n\nAverage Solutions per Generation:\n")
+            file.write('\n'.join(map(str, avg_sol)))
+
+        print("Results saved to ga_results.txt")
 
     def generateGenes(self):
 

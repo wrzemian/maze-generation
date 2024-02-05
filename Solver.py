@@ -1,7 +1,7 @@
 from math import factorial
 from Astar import astar
 import itertools
-
+import gc
 
 def solve_maze(maze):
     path = []
@@ -55,46 +55,32 @@ def solve_maze(maze):
         total_permutations = factorial(len(remainingKeys))
         checked_permutations = 0
 
-        # print("start: ", start, "end:", end, "remainingKeys", remainingKeys)
         for keys in itertools.permutations(remainingKeys):
             if depth == 0:
                 checked_permutations += 1
-                print(f"  {checked_permutations / total_permutations * 100:.2f}%, klucze:", keys)
+                print(checked_permutations, "/", total_permutations, "klucze:", keys)
 
             new_keys = list(keys)[1:]
-            # print("keys:", keys)
-            # print("new keys:", new_keys)
             if new_keys is not None:
-                # print(depth, "2nd checkroute, to key: ", keys[0])
-                # print("0TH: ", path)
                 if checkRoute(start, keys[0], path):
-                    # print("2ND: ", path)
-                    # print("2ND CHECKORUTE PASSED")
                     if not new_keys:
-                        # print(depth, "3rd checkroute")
                         if checkRoute(keys[0], maze.endingPoint, path):
-                            # print("3RD: ", path)
                             raise ValueError('\n\nREACHED EXIT')
-
                     for otherKey in new_keys:
-                        # print("key: ", otherKey)
                         logic(new_keys, keys[0], otherKey, path, depth + 1)
 
     if not maze.startingPoint:
-        # print("NO STARTING POINT")
         return False
     if len(maze.startingPoint) > 2:
-        # print("MORE THAN ONE STARTING POINT")
         return False
 
     if not maze.endingPoint:
-        # print("NO END")
         return False
     if len(maze.endingPoint) > 2:
-        # print("MORE THAN ONE END")
         return False
 
     createKeyArr()
+    # print("START:", maze.startingPoint, "END:", maze.endingPoint)
     try:
         if maze.hasDoors:
             logic(key_arr, maze.startingPoint, maze.endingPoint, path)
@@ -107,5 +93,5 @@ def solve_maze(maze):
         # print(path)
         return len(path)-1
     else:
-        print("NO ROUTE")
+        # print("NO ROUTE")
         return False
